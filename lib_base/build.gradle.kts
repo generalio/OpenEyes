@@ -1,20 +1,24 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    kotlin("kapt")
+}
+
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.name)
+    }
 }
 
 android {
-    namespace = "com.generals.openeyes"
-    compileSdk = 35
+    namespace = "com.generals.lib.base"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.generals.openeyes"
         minSdk = 30
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -40,12 +44,12 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
-    implementation(libs.androidx.activity)
-    implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(project(":lib_base"))
-    implementation(project(":module_home"))
+    implementation(libs.anrwatchdog)
+    implementation(libs.arouter.api)
+    kapt(libs.arouter.compiler)
+
 }

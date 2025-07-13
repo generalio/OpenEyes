@@ -10,6 +10,19 @@ material = "1.12.0"
 activity = "1.10.1"
 constraintlayout = "2.2.1"
 
+flexbox = "3.0.0"
+glide = "4.16.0"
+retrofit = "2.9.0"
+rxjava = "3.0.0"
+android-activity-ktx = "1.10.1"
+android-fragment-ktx = "1.8.6"
+lifecycle = "2.8.7"
+arouter = "1.5.2"
+okhttp = "4.9.0"
+paging3 = "3.3.1"
+
+anrwatchdog = "1.4.0"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -20,7 +33,50 @@ material = { group = "com.google.android.material", name = "material", version.r
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+retrofit-adapter-rxjava = { module = "com.squareup.retrofit2:adapter-rxjava3", version.ref = "retrofit" }
+rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
+rxjava-android = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxjava"}
+android-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "android-activity-ktx" }
+android-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "android-fragment-ktx" }
+android-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+android-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
+arouter-api = { module = "com.alibaba:arouter-api", version.ref = "arouter" }
+arouter-compiler = { module = "com.alibaba:arouter-compiler", version.ref = "arouter" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+paging = { module = "androidx.paging:paging-runtime", version.ref = "paging3" }
+paging-rxjava = { module = "androidx.paging:paging-rxjava3", version.ref = "paging3" }
+anrwatchdog = { module = "com.github.anrwatchdog:anrwatchdog", version.ref = "anrwatchdog" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+
+[bundles]
+projectBase = [
+    "retrofit",
+    "retrofit-adapter-rxjava",
+    "retrofit-converter-gson",
+    "rxjava",
+    "rxjava-android",
+    "android-activity-ktx",
+    "android-fragment-ktx",
+    "android-lifecycle-viewmodel-ktx",
+    "android-lifecycle-livedata-ktx",
+    "paging",
+    "paging-rxjava"
+]
+
+network = [
+    "retrofit",
+    "retrofit",
+    "retrofit-adapter-rxjava",
+    "retrofit-converter-gson",
+    "rxjava",
+    "rxjava-android"
+]
 
