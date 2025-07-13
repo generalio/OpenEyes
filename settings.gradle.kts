@@ -24,3 +24,5 @@ include(":app")
 include(":lib_base")
 include(":lib_net")
 include(":module_home")
+
+include(":module_discover")
