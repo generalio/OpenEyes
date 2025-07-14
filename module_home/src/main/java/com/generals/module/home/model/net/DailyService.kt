@@ -12,7 +12,7 @@ import retrofit2.http.Query
 
 interface DailyService{
 
-    @GET("v5/index/tab/feed?udid=435865baacfc49499632ea13c5a78f944c2f28aa")
-    suspend fun getDaily(@Query("page") page: Int) : DailyResponse
+    @GET("v5/index/tab/feed")
+    suspend fun getDaily(@Query("date") date: String?) : DailyResponse
 
 }
