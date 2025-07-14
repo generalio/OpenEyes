@@ -9,7 +9,8 @@ package com.generals.module.home.model.bean
 data class DailyResponse(
     val count: Int,
     val itemList: List<Daily>,
-    val total: Int
+    val total: Int,
+    val nextPageUrl: String
 )
 
 data class Daily(
