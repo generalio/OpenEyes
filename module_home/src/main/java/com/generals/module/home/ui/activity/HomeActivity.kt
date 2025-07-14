@@ -2,6 +2,7 @@ package com.generals.module.home.ui.activity
 
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
+import com.example.module_discover.DiscoverFragment
 import com.generals.lib.base.BaseActivity
 import com.generals.module.home.R
 import com.generals.module.home.ui.adapter.VP2Adapter
@@ -28,7 +29,9 @@ class HomeActivity : BaseActivity() {
 
     private fun initEvent() {
         val fragmentList = listOf(
-            { HomeFragment() }
+            { HomeFragment() },
+            { HomeFragment() },
+            { DiscoverFragment() }
         )
         viewPager2.adapter = VP2Adapter(this, fragmentList)
         viewPager2.isUserInputEnabled = false //TODO: 暂且禁用滑动，后续优化
@@ -44,7 +47,7 @@ class HomeActivity : BaseActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_found -> {
-
+                    viewPager2.currentItem = 2
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_hot -> {

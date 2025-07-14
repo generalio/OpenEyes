@@ -59,4 +59,5 @@ dependencies {
 
     implementation(project(":lib_base"))
     implementation(project(":lib_net"))
+    implementation(project(":module_discover"))
 }
