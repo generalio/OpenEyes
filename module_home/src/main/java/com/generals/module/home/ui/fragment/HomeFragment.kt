@@ -39,6 +39,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun initEvent() {
+        mTabHome.addTab(mTabHome.newTab().setText("发现"))
         mTabHome.addTab(mTabHome.newTab().setText("日报"))
         mTabHome.addTab(mTabHome.newTab().setText("推荐"))
         val fragmentList = listOf(

@@ -23,12 +23,15 @@ import com.generals.module.home.model.bean.Daily
  */
 
 class DailyAdapter() : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Daily>() {
+    /**
+     * 接口没有唯一ID标识符，故这里只能粗暴处理，导致每次切换后台回来都会重新刷新一遍‘
+     */
     override fun areContentsTheSame(oldItem: Daily, newItem: Daily): Boolean {
-        return oldItem == newItem
+        return true
     }
 
     override fun areItemsTheSame(oldItem: Daily, newItem: Daily): Boolean {
-        return oldItem.data.content.id == newItem.data.content.id
+        return true
     }
 
 } ) {
