@@ -13,7 +13,7 @@ import retrofit2.create
 
 class ServiceCreator {
 
-    private val BASE_URL = "http://baobab.kaiyanapp.com/api"
+    private val BASE_URL = "http://baobab.kaiyanapp.com/api/"
 
     val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)

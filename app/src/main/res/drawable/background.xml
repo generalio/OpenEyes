@@ -1,0 +1,7 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <bitmap
+            android:src="@drawable/bg_splash"
+            android:gravity="fill" />  <!-- 关键！fill 表示拉伸填满全屏 -->
+    </item>
+</layer-list>

@@ -58,4 +58,5 @@ dependencies {
 //    kapt(libs.arouter.compiler)
 
     implementation(project(":lib_base"))
+    implementation(project(":lib_net"))
 }

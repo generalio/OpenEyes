@@ -68,7 +68,8 @@ projectBase = [
     "android-lifecycle-viewmodel-ktx",
     "android-lifecycle-livedata-ktx",
     "paging",
-    "paging-rxjava"
+    "paging-rxjava",
+    "glide"
 ]
 
 network = [
