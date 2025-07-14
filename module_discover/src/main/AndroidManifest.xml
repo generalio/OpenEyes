@@ -3,12 +3,6 @@
 
     <application>
 
-
-        <activity
-            android:name=".DiscoverActivity"
-            android:exported="true">
-
-        </activity>
     </application>
 
 </manifest>
