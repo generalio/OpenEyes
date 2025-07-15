@@ -77,7 +77,8 @@ abstract class BaseActivity : AppCompatActivity() {
     //检查网络是否链接
     @SuppressLint("ServiceCast")
     fun isNetworkAvailable(): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        // 这里不能用context.getSystemService()，容易导致内存泄漏，应该使用applicationContext,这样持有的就是application了
+        val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false
         val networkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
         val isAvailable = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)

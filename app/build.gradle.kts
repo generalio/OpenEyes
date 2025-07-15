@@ -48,4 +48,7 @@ dependencies {
 
     implementation(project(":lib_base"))
     implementation(project(":module_home"))
+    implementation(project(":module_video"))
+
+    debugImplementation("com.squareup.leakcanary:leakcanary-android:2.9.1")
 }

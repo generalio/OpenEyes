@@ -1,5 +1,5 @@
 plugins {
-    // alias(libs.plugins.android.application)
+//    alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.android.library")
     kotlin("kapt")
@@ -12,13 +12,12 @@ kapt {
 }
 
 android {
-    namespace = "com.generals.module.home"
+    namespace = "com.generals.module.video"
     compileSdk = 35
 
     defaultConfig {
-//        applicationId = "com.generals.module.home"
+//        applicationId = "com.generals.module.video"
         minSdk = 30
-        targetSdk = 34
 //        versionCode = 1
 //        versionName = "1.0"
 
@@ -57,9 +56,9 @@ dependencies {
     implementation(libs.bundles.projectBase)
     implementation(libs.arouter.api)
     kapt(libs.arouter.compiler)
+    implementation("io.github.carguo:gsyvideoplayer:11.0.0")
 
     implementation(project(":lib_base"))
     implementation(project(":lib_net"))
-    implementation(project(":module_discover"))
 
 }

@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OpenEyes"
         tools:targetApi="31">
+        
         <activity
             android:name="com.generals.module.home.ui.activity.HomeActivity"
             android:exported="true" >
@@ -26,6 +27,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name="com.generals.module.video.ui.activity.VideoActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:screenOrientation="fullSensor"
+            tools:ignore="DiscouragedApi">
+
+        </activity>
+        
     </application>
 
 </manifest>

@@ -16,8 +16,15 @@ import kotlinx.coroutines.flow.Flow
 
 class DailyViewModel : ViewModel() {
 
+    /**
+     * 原因在这里，之前是在方法里面每次都new一个flow，所以每次拿到的flow都是新的，数据就会全量刷新，很影响体验
+     * 现在采用viewmodel保存下flow，每次调用方法返回
+     */
+
+    private val dailyFlow = HomeRepository.getDaily().flow.cachedIn(viewModelScope)
+
     fun getDaily() : Flow<PagingData<Daily>> {
-        return HomeRepository.getDaily().flow.cachedIn(viewModelScope)
+        return dailyFlow
     }
 
 }

@@ -23,13 +23,38 @@ import com.generals.module.home.model.bean.recommend.Recommend
  * @Date : 2025/7/14 20:35
  */
 
-class RecommendAdapter : PagingDataAdapter<Recommend, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Recommend>() {
+class RecommendAdapter(val itemClickListener: OnItemClickListener) : PagingDataAdapter<Recommend, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Recommend>() {
     override fun areContentsTheSame(oldItem: Recommend, newItem: Recommend): Boolean {
-        return true
+        return newItem == oldItem
     }
 
     override fun areItemsTheSame(oldItem: Recommend, newItem: Recommend): Boolean {
-        return true
+//        var newId = 0
+//        if(newItem.data.type == "textCard") {
+//            newId = newItem.data.id
+//        } else {
+//            if(newItem.data.type == "followCard") {
+//                newId = newItem.data.content.data.id
+//            } else {
+//                if(newItem.data.type == "videoSmallCard") {
+//                    newId = newItem.data.id
+//                }
+//            }
+//        }
+//
+//        var oldId = 0
+//        if(oldItem.data.type == "textCard") {
+//            oldId = oldItem.data.id
+//        } else {
+//            if(oldItem.data.type == "followCard") {
+//                oldId = oldItem.data.content.data.id
+//            } else {
+//                if(oldItem.data.type == "videoSmallCard") {
+//                    oldId = oldItem.data.id
+//                }
+//            }
+//        }
+        return newItem == oldItem
     }
 
 }) {
@@ -41,7 +66,8 @@ class RecommendAdapter : PagingDataAdapter<Recommend, RecyclerView.ViewHolder>(o
     }
 
     interface OnItemClickListener {
-        fun onVideoClick(daily: Daily)
+        fun onVideoClick(recommend: Recommend)
+        fun onVideoSmallClick(recommend: Recommend)
     }
 
     inner class TitleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -57,7 +83,7 @@ class RecommendAdapter : PagingDataAdapter<Recommend, RecyclerView.ViewHolder>(o
 
         init {
             mIvCover.setOnClickListener {
-
+                itemClickListener.onVideoClick(getItem(bindingAdapterPosition)!!)
             }
         }
     }
@@ -70,7 +96,7 @@ class RecommendAdapter : PagingDataAdapter<Recommend, RecyclerView.ViewHolder>(o
 
         init {
             mIvCover.setOnClickListener {
-
+                itemClickListener.onVideoSmallClick(getItem(bindingAdapterPosition)!!)
             }
         }
     }

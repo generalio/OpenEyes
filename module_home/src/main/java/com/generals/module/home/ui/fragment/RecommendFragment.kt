@@ -13,9 +13,12 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.android.arouter.launcher.ARouter
 import com.generals.module.home.R
+import com.generals.module.home.model.bean.recommend.Recommend
 import com.generals.module.home.ui.activity.HomeActivity
 import com.generals.module.home.ui.adapter.FooterAdapter
 import com.generals.module.home.ui.adapter.RecommendAdapter
@@ -23,7 +26,7 @@ import com.generals.module.home.viewmodel.RecommendViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class RecommendFragment : Fragment() {
+class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
 
     private val viewModel : RecommendViewModel by viewModels()
 
@@ -47,7 +50,7 @@ class RecommendFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = RecommendAdapter()
+        adapter = RecommendAdapter(this)
         homeActivity = activity as HomeActivity
 
         loadingLayout = view.findViewById(R.id.recommend_layout_load)
@@ -89,9 +92,13 @@ class RecommendFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getRecommend().collectLatest {
                     recyclerView.visibility = View.VISIBLE
-                    hideLoading()
                     adapter.submitData(it)
                 }
+            }
+        }
+        adapter.addLoadStateListener { loadState ->
+            if(loadState.refresh is LoadState.NotLoading) {
+                hideLoading()
             }
         }
     }
@@ -107,5 +114,70 @@ class RecommendFragment : Fragment() {
         loadingLayout.visibility = View.GONE
         progressLoading.visibility = View.GONE
         mTvLoading.visibility = View.GONE
+    }
+
+    override fun onVideoClick(recommend: Recommend) {
+        val id = recommend.data.content.data.id
+        val title = recommend.data.content.data.title
+        val authorName = recommend.data.content.data.author.name
+        val authorIcon = recommend.data.content.data.author.icon
+        val authorDescription = recommend.data.content.data.author.description
+        val subTitle = recommend.data.content.data.author.name + " / #" + recommend.data.content.data.category
+        val description = recommend.data.content.data.description
+        val collectionCount = recommend.data.content.data.consumption.realCollectionCount
+        val shareCount = recommend.data.content.data.consumption.shareCount
+        val replyCount = recommend.data.content.data.consumption.replyCount
+        val background = recommend.data.content.data.cover.blurred
+        val cover = recommend.data.content.data.cover.detail
+        val playUrl = recommend.data.content.data.playUrl
+
+        ARouter.getInstance().build("/video/VideoActivity")
+            .withInt("id", id)
+            .withString("title", title)
+            .withString("subTitle", subTitle)
+            .withString("description", description)
+            .withInt("collectionCount", collectionCount)
+            .withInt("shareCount", shareCount)
+            .withInt("replyCount", replyCount)
+            .withString("background", background)
+            .withString("cover", cover)
+            .withString("playUrl", playUrl)
+            .withString("authorName", authorName)
+            .withString("authorIcon", authorIcon)
+            .withString("authorDescription", authorDescription)
+            .navigation()
+    }
+
+    // 小型视频的跳转（接口数据与普通的不一样）
+    override fun onVideoSmallClick(recommend: Recommend) {
+        val id = recommend.data.id
+        val title = recommend.data.title
+        val authorName = recommend.data.author.name
+        val authorIcon = recommend.data.author.icon
+        val authorDescription = recommend.data.author.description
+        val subTitle = recommend.data.author.name + " / #" + recommend.data.category
+        val description = recommend.data.description
+        val collectionCount = recommend.data.consumption.realCollectionCount
+        val shareCount = recommend.data.consumption.shareCount
+        val replyCount = recommend.data.consumption.replyCount
+        val background = recommend.data.cover.blurred
+        val cover = recommend.data.cover.detail
+        val playUrl = recommend.data.playUrl
+
+        ARouter.getInstance().build("/video/VideoActivity")
+            .withInt("id", id)
+            .withString("title", title)
+            .withString("subTitle", subTitle)
+            .withString("description", description)
+            .withInt("collectionCount", collectionCount)
+            .withInt("shareCount", shareCount)
+            .withInt("replyCount", replyCount)
+            .withString("background", background)
+            .withString("cover", cover)
+            .withString("playUrl", playUrl)
+            .withString("authorName", authorName)
+            .withString("authorIcon", authorIcon)
+            .withString("authorDescription", authorDescription)
+            .navigation()
     }
 }
