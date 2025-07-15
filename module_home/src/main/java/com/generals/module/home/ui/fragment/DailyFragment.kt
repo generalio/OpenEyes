@@ -50,7 +50,7 @@ class DailyFragment : Fragment() {
         adapter = DailyAdapter()
         homeActivity = activity as HomeActivity
 
-        loadingLayout = view.findViewById(R.id.layout_load)
+        loadingLayout = view.findViewById(R.id.daily_layout_load)
         progressLoading = loadingLayout.findViewById(R.id.progress_load)
         mBtnRetry = loadingLayout.findViewById(R.id.btn_retry)
         mTvLoading = loadingLayout.findViewById(R.id.tv_load)

@@ -1,4 +1,4 @@
-package com.generals.module.home.model.bean
+package com.generals.module.home.model.bean.daily
 
 /**
  * @Desc : 日报的数据类

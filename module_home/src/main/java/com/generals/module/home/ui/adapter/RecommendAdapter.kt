@@ -1,6 +1,7 @@
 package com.generals.module.home.ui.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,31 +15,29 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.generals.lib.base.Util
 import com.generals.module.home.R
 import com.generals.module.home.model.bean.daily.Daily
+import com.generals.module.home.model.bean.recommend.Recommend
 
 /**
- * @Desc : 日报RV的Adapter
+ * @Desc : 推荐页的Adapter
  * @Author : zzx
- * @Date : 2025/7/14 11:18
+ * @Date : 2025/7/14 20:35
  */
 
-class DailyAdapter() : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Daily>() {
-    /**
-     * 接口没有唯一ID标识符(id基本都是0，header字段里的id不为0，但是text又没有header字段容易爆红)
-     * 故这里只能粗暴处理，导致每次切换后台回来都会重新刷新一遍
-     */
-    override fun areContentsTheSame(oldItem: Daily, newItem: Daily): Boolean {
+class RecommendAdapter : PagingDataAdapter<Recommend, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Recommend>() {
+    override fun areContentsTheSame(oldItem: Recommend, newItem: Recommend): Boolean {
         return true
     }
 
-    override fun areItemsTheSame(oldItem: Daily, newItem: Daily): Boolean {
+    override fun areItemsTheSame(oldItem: Recommend, newItem: Recommend): Boolean {
         return true
     }
 
-} ) {
+}) {
 
     companion object {
         private val TYPE_TITLE = 0
         private val TYPE_VIDEO = 1
+        private val TYPE_VIDEO_SMALL = 2
     }
 
     interface OnItemClickListener {
@@ -55,6 +54,19 @@ class DailyAdapter() : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object 
         val mIvAvatar: ImageView = view.findViewById(R.id.iv_video_avatar)
         val mTvVideoTitle: TextView = view.findViewById(R.id.tv_video_title)
         val mTvDesc: TextView = view.findViewById(R.id.tv_video_desc)
+
+        init {
+            mIvCover.setOnClickListener {
+
+            }
+        }
+    }
+
+    inner class VideoSmallViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val mIvCover: ImageView = view.findViewById(R.id.iv_video_small_cover)
+        val mTvVideoTime: TextView = view.findViewById(R.id.tv_video_small_time)
+        val mTvVideoTitle: TextView = view.findViewById(R.id.tv_video_small_title)
+        val mTvDesc: TextView = view.findViewById(R.id.tv_video_small_desc)
 
         init {
             mIvCover.setOnClickListener {
@@ -84,17 +96,33 @@ class DailyAdapter() : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object 
                         .into(holder.mIvCover)
                     holder.mTvVideoTime.text = Util.transferTime(daily.data.content.data.duration)
                 }
+                is VideoSmallViewHolder -> {
+                    holder.mTvVideoTitle.text = daily.data.title
+                    holder.mTvDesc.text = daily.data.author.name + " / #" + daily.data.category
+                    Glide.with(holder.mIvCover.context)
+                        .load(daily.data.cover.feed)
+                        .transform(RoundedCorners(40))
+                        .into(holder.mIvCover)
+                    holder.mTvVideoTime.text = Util.transferTime(daily.data.duration)
+                }
+
+                else -> {}
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if(viewType == TYPE_TITLE) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_title,parent,false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_title, parent, false)
             return TitleViewHolder(view)
         } else {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video,parent,false)
-            return VideoViewHolder(view)
+            if(viewType == TYPE_VIDEO) {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video, parent, false)
+                return VideoViewHolder(view)
+            } else {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video_small, parent, false)
+                return VideoSmallViewHolder(view)
+            }
         }
     }
 
@@ -103,8 +131,11 @@ class DailyAdapter() : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object 
         if(item.type == "textCard") {
             return TYPE_TITLE
         } else {
-            return TYPE_VIDEO
+            if(item.type == "followCard") {
+                return TYPE_VIDEO
+            } else {
+                return TYPE_VIDEO_SMALL
+            }
         }
     }
-
 }

@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.fragment.DailyFragment">
 
-    <include layout="@layout/layout_loading" android:id="@+id/layout_load" />
+    <include layout="@layout/layout_loading" android:id="@+id/daily_layout_load" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_daily"

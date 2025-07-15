@@ -13,10 +13,14 @@ import com.generals.lib.net.ServiceCreator
 
 object HomeRepository {
 
-    val dailyService = ServiceCreator().create<DailyService>()
+    private val dailyService = ServiceCreator().create<DailyService>()
+    private val recommendService = ServiceCreator().create<RecommendService>()
 
     fun getDaily() = Pager(config = PagingConfig(50), pagingSourceFactory = {
         DailyPagingSource(dailyService) }
     )
+
+    fun getRecommend() = Pager(config = PagingConfig(5), pagingSourceFactory = {RecommendPagingSource(
+        recommendService)})
 
 }

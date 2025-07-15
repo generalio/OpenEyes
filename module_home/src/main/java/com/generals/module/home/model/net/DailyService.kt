@@ -1,6 +1,6 @@
 package com.generals.module.home.model.net
 
-import com.generals.module.home.model.bean.DailyResponse
+import com.generals.module.home.model.bean.daily.DailyResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 

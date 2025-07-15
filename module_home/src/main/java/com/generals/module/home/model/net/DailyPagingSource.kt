@@ -3,10 +3,7 @@ package com.generals.module.home.model.net
 import android.net.Uri
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.generals.lib.net.ServiceCreator
-import com.generals.module.home.model.bean.Daily
-import kotlinx.coroutines.flow.callbackFlow
-import kotlin.random.Random
+import com.generals.module.home.model.bean.daily.Daily
 
 /**
  * @Desc : 日报的Paging3
@@ -21,6 +18,11 @@ class DailyPagingSource(private val dailyService: DailyService) : PagingSource<S
     }
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, Daily> {
+        /**
+         * 这里接口不是以页数给出的而是有个nextPageUrl字段
+         * 故提取出其中的date="..."的内容作为下一次请求的标识
+         * preKey如果不上拉刷新无影响
+         */
         return try {
             val pageUrl = params.key
             val date = pageUrl?.let {
