@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -19,6 +21,12 @@ import com.bumptech.glide.request.transition.Transition
 import com.generals.lib.base.BaseActivity
 import com.generals.module.video.R
 import com.generals.module.video.model.bean.VideoInfo
+import com.generals.module.video.ui.adapter.VP2Adapter
+import com.generals.module.video.ui.fragment.VideoCommentFragment
+import com.generals.module.video.ui.fragment.VideoDetailFragment
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.google.android.material.tabs.TabLayoutMediator
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder
 import com.shuyu.gsyvideoplayer.listener.GSYSampleCallBack
@@ -88,6 +96,8 @@ class VideoActivity : BaseActivity() {
     private lateinit var videoPlayer: StandardGSYVideoPlayer
 
     private lateinit var videoLayout: View
+    private lateinit var tabLayout: TabLayout
+    private lateinit var viewPager2: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,25 +114,50 @@ class VideoActivity : BaseActivity() {
     private fun initView() {
         videoPlayer = findViewById(R.id.video_player)
         videoLayout = findViewById(R.id.layout_video)
+        tabLayout = findViewById(R.id.tab_video)
+        viewPager2 = findViewById(R.id.vp2_video)
     }
 
     private fun initEvent() {
-        //背景图加载
-        Glide.with(this)
-            .asBitmap()
-            .load(videoInfo.background)
-            .into(object : CustomTarget<Bitmap>() {
-                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                    videoLayout.background = BitmapDrawable(resources,resource)
+        tabLayout.addTab(tabLayout.newTab().setText("简介"))
+        tabLayout.addTab(tabLayout.newTab().setText("评论"))
+        val fragmentList = listOf(
+            { VideoDetailFragment() },
+            { VideoCommentFragment() }
+        )
+        viewPager2.adapter = VP2Adapter(this,fragmentList)
+        TabLayoutMediator(tabLayout,viewPager2) { tab, position ->
+            if(position == 0) {
+                tab.text = "简介"
+            } else {
+                if(position == 1) {
+                    tab.text = "评论"
                 }
-
-                override fun onLoadCleared(placeholder: Drawable?) {
-
+            }
+        }.attach()
+        tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                when(tab.position) {
+                    1 -> tab.text = "评 论"
+                    0 -> tab.text = "简 介"
                 }
+            }
 
-            })
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                when(tab.position) {
+                    1 -> tab.text = "评论"
+                    0 -> tab.text = "简介"
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+
+            }
+
+        })
     }
 
+    // 视频的一些初始化
     private fun initVideo() {
         orientationUtils = OrientationUtils(this, videoPlayer) // 外部辅助的旋转，帮助全屏
         orientationUtils.isEnable = false // 初始不打开外部的旋转
