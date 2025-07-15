@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="115dp"
+    android:layout_width="120dp"
     android:layout_height="60dp">
 
     <androidx.cardview.widget.CardView
@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
 
 
                 android:layout_marginStart="8dp"

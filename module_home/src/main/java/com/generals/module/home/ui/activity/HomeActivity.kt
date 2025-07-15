@@ -2,7 +2,7 @@ package com.generals.module.home.ui.activity
 
 import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
-import com.example.module_discover.DiscoverFragment
+import com.example.module_discover.ui.fragment.DiscoverFragment
 import com.generals.lib.base.BaseActivity
 import com.generals.module.home.R
 import com.generals.module.home.ui.adapter.VP2Adapter
