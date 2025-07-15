@@ -8,10 +8,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.module_discover.model.bean.CategoryResponse
 import com.example.module_discover.model.bean.SpecialTopicsDetailResponse
 import com.example.module_discover.model.bean.SpecialTopicsResponse
+import com.example.module_discover.model.bean.ThemeDetailItem
 import com.example.module_discover.model.bean.ThemeItem
+import com.example.module_discover.model.bean.TitleItem
+import com.example.module_discover.model.bean.VideoItem
 import com.example.module_discover.model.net.CategoryRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 class DiscoverViewModel : ViewModel() {
     private val repository = CategoryRepository()
@@ -20,6 +26,8 @@ class DiscoverViewModel : ViewModel() {
     private val _themeListLiveData = MutableLiveData<List<ThemeItem>>()
     // 对外暴露的 LiveData，供 UI 层观察
     val themeList: LiveData<List<ThemeItem>> = _themeListLiveData
+    private val _themeDetailLiveData = MutableLiveData<List<ThemeDetailItem>>()
+    val themeDetailList:LiveData<List<ThemeDetailItem>> = _themeDetailLiveData
 
     // 内部可见的 MutableLiveData
     private val _category = MutableLiveData<CategoryResponse>()
@@ -142,6 +150,79 @@ class DiscoverViewModel : ViewModel() {
                 _loading.value = false
             }
         }
+    }
+    fun loadThemeDetailItemData(id: Int) {
+        viewModelScope.launch {
+            _loading.value = true
+            val themeDetailList = mutableListOf<ThemeDetailItem>() // 修改为可变列表
+            try {
+                val detailResult = repository.getSpecialTopicsDetail(id)
+                detailResult.onSuccess { detail ->
+                    // 4. 从详情数据中提取字段，转换为 ThemeItem
+                    val titleItem = TitleItem(
+                        imageTitle = detail.headerImage ?: detail.brief ?: "未知专题",
+                        title = detail.brief ?: "",
+                        subTitle = detail.text,
+                        shareLink = detail.shareLink
+
+                    )
+
+                    // 添加标题项到列表
+                    themeDetailList.add(titleItem)
+
+                    // 处理视频项
+                    detail.itemList.forEachIndexed { index, item ->
+                        try {
+                            // 确保标签列表有足够的元素
+                            val tags = item.data.content.data.tags
+                            val tag1 = if (tags.isNotEmpty()) tags[0].name else ""
+                            val tag2 = if (tags.size > 1) tags[1].name else ""
+                            val tag3 = if (tags.size > 2) tags[2].name else ""
+
+                            val videoItem = VideoItem(
+                                icon = item.data.header.icon,
+                                iconName = item.data.header.issuerName,
+                                time = formatTimestamp(item.data.header.time.toLong()),
+                                title = item.data.content.data.title,
+                                subTitle = item.data.content.data.description,
+                                tag1 = tag1,
+                                tag2 = tag2,
+                                tag3 = tag3,
+                                videoImage = item.data.content.data.cover.feed
+                            )
+
+                            // 添加视频项到列表
+                            themeDetailList.add(videoItem)
+
+                        } catch (e: Exception) {
+                            Log.e("DiscoverViewModel", "处理第 $index 个视频项出错: ${e.message}")
+                        }
+                    }
+
+                    // 将转换后的列表赋值给LiveData
+                    _themeDetailLiveData.value = themeDetailList
+
+                }.onFailure { e ->
+                    Log.e("DiscoverViewModel", "加载专题 $id 详情失败", e)
+                    _error.value = "加载专题详情失败: ${e.message}"
+                }
+            } catch (e: Exception) {
+                _error.value = "加载主题数据异常: ${e.message}"
+                Log.e("DiscoverViewModel", "主题数据加载异常", e)
+            } finally {
+                _loading.value = false
+            }
+        }
+    }
+    fun formatTimestamp(timestamp: Long): String {
+        // 1. 将时间戳转换为 Instant 对象（UTC 时间）
+        val instant = Instant.ofEpochMilli(timestamp)
+        // 2. 转换为本地时区（如系统默认时区）
+        val localDateTime = instant.atZone(ZoneId.systemDefault())
+        // 3. 定义输出格式（如 "yyyy-MM-dd HH:mm:ss"）
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        // 4. 格式化并返回
+        return localDateTime.format(formatter)
     }
 
     // 加载所有数据

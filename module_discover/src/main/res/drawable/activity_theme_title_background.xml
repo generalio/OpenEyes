@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <layer-list>
+            <!-- 底层：阴影（柔和扩散） -->
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="#0D000000" /> <!-- 阴影颜色（透明度10%的黑） -->
+                    <corners android:radius="10dp" />
+                    <!-- 阴影扩散范围（上下左右各2dp，柔和不夸张） -->
+                    <padding android:top="2dp" android:left="2dp" android:right="2dp" android:bottom="2dp" />
+                </shape>
+            </item>
+            <!-- 上层：白色背景+极细边框 -->
+            <item>
+                <shape android:shape="rectangle" android:antialias="true">
+                    <solid android:color="@android:color/white" />
+                    <!-- 0.5dp极细边框，比背景稍深一点 -->
+                    <stroke android:width="0.5dp" android:color="#F0F0F0" />
+                    <corners android:radius="10dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

@@ -18,6 +18,7 @@ import com.example.module_discover.R
 import com.example.module_discover.ui.adapter.CategoryAdapter
 import com.example.module_discover.model.bean.CategoryItem
 import com.example.module_discover.model.bean.ThemeItem
+import com.example.module_discover.ui.activity.ThemeActivity
 import com.example.module_discover.ui.adapter.OnCategoryItemClickListener
 import com.example.module_discover.ui.adapter.ThemeAdapter
 import com.example.module_discover.ui.adapter.ThemeItemClickListener
@@ -27,7 +28,6 @@ class DiscoverFragment : Fragment() {
     private lateinit var first_recyclerView: RecyclerView
     private lateinit var Second_recyclerView: RecyclerView
     private lateinit var cardView: CardView
-    private lateinit var button: Button
     private lateinit var viewModel: DiscoverViewModel
     private lateinit var themeAdapter: ThemeAdapter
 
@@ -75,7 +75,6 @@ class DiscoverFragment : Fragment() {
     }
 
     private fun initView(view: View) {
-        button = view.findViewById(R.id.button2)
         cardView = view.findViewById(R.id.search_Container)
         first_recyclerView = view.findViewById(R.id.category_recyclerView)
         Second_recyclerView = view.findViewById(R.id.theme_playlist_recyclerView)
@@ -85,6 +84,9 @@ class DiscoverFragment : Fragment() {
             override fun onItemClick(position: Int, item: ThemeItem) {
                 val message = "点击了 ${item.title}，ID: ${item.id}"
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                val intent = Intent(requireContext(), ThemeActivity::class.java)
+                intent.putExtra("key_id", item.id)  // 传递主题ID
+                startActivity(intent)
             }
         })
 
@@ -103,6 +105,7 @@ class DiscoverFragment : Fragment() {
             override fun onItemClick(position: Int, item: CategoryItem) {
                 val message = "点击了 ${item.CategoryName}，ID: ${item.id}"
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+
             }
         })
 

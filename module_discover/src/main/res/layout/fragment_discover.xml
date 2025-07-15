@@ -10,13 +10,12 @@
     <!-- 搜索框 -->
     <androidx.cardview.widget.CardView
         android:id="@+id/search_Container"
-        android:layout_width="0dp"
-        android:layout_height="46dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="350dp"
+        android:layout_height="40dp"
         app:cardBackgroundColor="#F5F5F5"
         app:cardCornerRadius="8dp"
         app:cardElevation="2dp"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
+        android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -35,15 +34,6 @@
     </androidx.cardview.widget.CardView>
 
     <!-- 通知按钮 -->
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="12dp"
-        android:background="@drawable/inform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <!-- ScrollView内容区域 -->
     <ScrollView
@@ -68,19 +58,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="12dp"
-                android:paddingBottom="16dp">
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
                 <!-- 分类标题 -->
                 <TextView
                     android:id="@+id/category_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
                     android:text="分类"
                     android:textColor="@color/black"
-                    android:textSize="25sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
                 <!-- 分类网格 -->
@@ -100,14 +90,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingTop="16dp"
-                android:paddingBottom="16dp">
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp">
 
                 <!-- 主题播单标题栏 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -119,13 +109,13 @@
                         android:layout_weight="1"
                         android:text="主题播单"
                         android:textColor="@color/black"
-                        android:textSize="25sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/theme_playlist_button"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
                         android:layout_marginEnd="12dp"
                         android:background="@drawable/right_arraw" />
 
