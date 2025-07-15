@@ -1,4 +1,4 @@
-package com.example.module_discover.adapter
+package com.example.module_discover.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +7,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.module_discover.R
-import com.example.module_discover.network.bean.CategoryItem
+import com.example.module_discover.model.bean.CategoryItem
 
-class CategoryAdapter(private val list: List<CategoryItem>):
-    RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
+// 定义点击事件接口
+interface OnCategoryItemClickListener {
+    fun onItemClick(position: Int, item: CategoryItem)
+}
+
+class CategoryAdapter(
+    private val list: List<CategoryItem>,
+    private val listener: OnCategoryItemClickListener? = null
+) : RecyclerView.Adapter<CategoryAdapter.CategoryHolder>() {
 
     class CategoryHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView2)
@@ -25,9 +32,16 @@ class CategoryAdapter(private val list: List<CategoryItem>):
 
     override fun onBindViewHolder(holder: CategoryHolder, position: Int) {
         val item = list[position]
+        // 设置图标和文字
         holder.imageView.setImageResource(item.imageResId)
-        // 确保属性名称正确，根据你的CategoryItem类定义
-        holder.imageName.text = item.CategoryName // 或者 item.CategoryName，取决于你的数据类定义
+        holder.imageName.text = item.CategoryName // 修正属性名首字母小写（规范命名）
+
+        // 绑定点击事件
+        holder.itemView.setOnClickListener {
+            // 回调接口方法，传递位置和数据
+            listener?.onItemClick(position, item)
+        }
+
     }
 
     override fun getItemCount(): Int = list.size
