@@ -24,6 +24,7 @@ class DetailInfoAdapter(private val videoInfo: VideoInfo, private val itemClickL
         fun onCollectClick()
         fun onCommentClick()
         fun onShareClick()
+        fun onDescriptionClick()
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -51,6 +52,10 @@ class DetailInfoAdapter(private val videoInfo: VideoInfo, private val itemClickL
             mTvShare.setOnClickListener {
                 itemClickListener.onShareClick()
             }
+            mTvDescription.setOnLongClickListener {
+                itemClickListener.onDescriptionClick()
+                true
+            }
         }
     }
 
@@ -61,7 +66,8 @@ class DetailInfoAdapter(private val videoInfo: VideoInfo, private val itemClickL
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.animate().alpha(1F).setDuration(500).start()
+        holder.itemView.alpha = 0F
+        holder.itemView.animate().alpha(1F).setDuration(600).start()
         holder.mTvTitle.text = videoInfo.title
         holder.mTvSubTitle.text = videoInfo.subTitle
         holder.mTvDescription.text = videoInfo.description

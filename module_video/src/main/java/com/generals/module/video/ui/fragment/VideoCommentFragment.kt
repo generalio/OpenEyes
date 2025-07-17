@@ -139,7 +139,7 @@ class VideoCommentFragment : Fragment() {
                 }
             }
             // 特殊处理，有的视频接口无最热评论故用最新评论的第一页代替
-            if(itemList[0].data.text == "最新评论") {
+            if(itemList.isNotEmpty() && itemList[0].data.text == "最新评论") {
                 for(item in itemList) {
                     if(item.type == "reply") {
                         hotList.add(item)

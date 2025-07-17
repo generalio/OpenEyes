@@ -58,6 +58,10 @@ class NewCommentAdapter : PagingDataAdapter<Comment, NewCommentAdapter.NewCommen
                 .into(holder.mIvAvatar)
         } else {
             holder.mTvUsername.text = "匿名用户"
+            Glide.with(holder.mIvAvatar.context)
+                .load(R.drawable.ic_avatar)
+                .circleCrop()
+                .into(holder.mIvAvatar)
         }
     }
 

@@ -82,7 +82,7 @@ class LoadingLayout(context: Context, attributeSet: AttributeSet?) : FrameLayout
         otherLayout.animate().translationY(maxSlopHeight / 3 * 2).setInterpolator(DecelerateInterpolator())
         if (rotateAnimator?.isRunning == true) return //防止重复创建
         rotateAnimator = ObjectAnimator.ofFloat(loading, "rotation", loading.rotation, loading.rotation - 360F).apply {
-            duration = 1500
+            duration = 1000
             repeatCount = 0
             interpolator = LinearInterpolator()
             addListener(object : AnimatorListener {

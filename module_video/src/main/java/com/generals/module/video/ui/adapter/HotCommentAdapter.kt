@@ -44,15 +44,23 @@ class HotCommentAdapter : ListAdapter<Comment, HotCommentAdapter.HotCommentViewH
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: HotCommentViewHolder, position: Int) {
         val comment = getItem(position)
-        holder.mTvUsername.text = comment.data.user.nickname
         val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
         holder.mTvDate.text = sdf.format(Date(comment.data.createTime))
         holder.mTvContent.text = comment.data.message
         holder.mTvZan.text = comment.data.likeCount.toString()
-        Glide.with(holder.mIvAvatar.context)
-            .load(comment.data.user.avatar)
-            .circleCrop()
-            .into(holder.mIvAvatar)
+        if(comment.data.user != null) {
+            Glide.with(holder.mIvAvatar.context)
+                .load(comment.data.user.avatar)
+                .circleCrop()
+                .into(holder.mIvAvatar)
+            holder.mTvUsername.text = comment.data.user.nickname
+        } else {
+            holder.mTvUsername.text = "匿名用户"
+            Glide.with(holder.mIvAvatar.context)
+                .load(R.drawable.ic_avatar)
+                .circleCrop()
+                .into(holder.mIvAvatar)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotCommentViewHolder {

@@ -1,5 +1,8 @@
 package com.generals.module.video.ui.activity
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -162,7 +165,11 @@ class VideoActivity : BaseActivity() {
         })
     }
 
-    // 视频的一些初始化
+    /**
+     * 视频的一些初始化
+     * 视频播放时会小概率出现内存泄漏（不知道触发流程）
+     * 猜测是视频播放器内部会对网络是否链接进行检测，调用ConnectiveManager，持有activity引用
+     */
     private fun initVideo() {
         orientationUtils = OrientationUtils(this, videoPlayer) // 外部辅助的旋转，帮助全屏
         orientationUtils.isEnable = false // 初始不打开外部的旋转
@@ -202,6 +209,7 @@ class VideoActivity : BaseActivity() {
         }
         videoPlayer.backButton.setOnClickListener {
             if(!GSYVideoManager.backFromWindowFull(this@VideoActivity)) {
+                orientationUtils.backToProtVideo()
                 finish()
             } else {
                 orientationUtils.backToProtVideo()
@@ -249,6 +257,13 @@ class VideoActivity : BaseActivity() {
 
     fun showToast(content: String) {
         Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
+    }
+
+    fun copyText(text: String) {
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("label", text)
+        clipboard.setPrimaryClip(clip)
+        showToast("已复制该简介")
     }
 
 }
