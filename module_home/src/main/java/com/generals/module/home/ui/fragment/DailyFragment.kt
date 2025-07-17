@@ -84,6 +84,7 @@ class DailyFragment : Fragment(),DailyAdapter.OnItemClickListener {
             mTvLoading.visibility = View.GONE
             progressLoading.visibility = View.GONE
             mBtnRetry.visibility = View.VISIBLE
+            homeActivity.showToast("网络链接失败，请重试!")
         }
     }
 
@@ -134,6 +135,7 @@ class DailyFragment : Fragment(),DailyAdapter.OnItemClickListener {
         val background = daily.data.content.data.cover.blurred
         val cover = daily.data.content.data.cover.detail
         val playUrl = daily.data.content.data.playUrl
+        val likeCount = daily.data.content.data.consumption.collectionCount
 
         ARouter.getInstance().build("/video/VideoActivity")
             .withInt("id", id)
@@ -149,6 +151,7 @@ class DailyFragment : Fragment(),DailyAdapter.OnItemClickListener {
             .withString("authorName", authorName)
             .withString("authorIcon", authorIcon)
             .withString("authorDescription", authorDescription)
+            .withInt("likeCount", likeCount)
             .navigation()
     }
 

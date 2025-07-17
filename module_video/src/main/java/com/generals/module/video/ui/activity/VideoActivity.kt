@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
@@ -88,22 +89,26 @@ class VideoActivity : BaseActivity() {
     @JvmField
     var cover: String = ""
 
+    @Autowired
+    @JvmField
+    var likeCount: Int = 0
+
     private var isPlay = false
     private var isPause = false
 
-    private lateinit var videoInfo: VideoInfo
+    lateinit var videoInfo: VideoInfo
     lateinit var orientationUtils: OrientationUtils
     private lateinit var videoPlayer: StandardGSYVideoPlayer
 
     private lateinit var videoLayout: View
     private lateinit var tabLayout: TabLayout
-    private lateinit var viewPager2: ViewPager2
+    lateinit var viewPager2: ViewPager2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
         ARouter.getInstance().inject(this)
-        videoInfo = VideoInfo(id,title, subTitle, description, collectionCount, shareCount, replyCount, background, playUrl, authorName, authorIcon, authorDescription, cover)
+        videoInfo = VideoInfo(id,title, subTitle, description, collectionCount, shareCount, replyCount, background, playUrl, authorName, authorIcon, authorDescription, cover, likeCount)
 
         initView()
         initEvent()
@@ -228,8 +233,9 @@ class VideoActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if(isPlay) {
-            videoPlayer.currentPlayer.release()
+            videoPlayer.onVideoPause()
         }
+        videoPlayer.currentPlayer.release()
         orientationUtils.releaseListener()
         GSYVideoManager.releaseAllVideos()
     }
@@ -239,6 +245,10 @@ class VideoActivity : BaseActivity() {
         if(isPlay || !isPause) {
             videoPlayer.onConfigurationChanged(this, newConfig, orientationUtils, true, true)
         }
+    }
+
+    fun showToast(content: String) {
+        Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
     }
 
 }

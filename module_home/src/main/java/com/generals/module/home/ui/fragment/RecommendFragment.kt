@@ -84,6 +84,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
             mTvLoading.visibility = View.GONE
             progressLoading.visibility = View.GONE
             mBtnRetry.visibility = View.VISIBLE
+            homeActivity.showToast("网络链接失败，请重试!")
         }
     }
 
@@ -130,6 +131,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
         val background = recommend.data.content.data.cover.blurred
         val cover = recommend.data.content.data.cover.detail
         val playUrl = recommend.data.content.data.playUrl
+        val likeCount = recommend.data.content.data.consumption.collectionCount
 
         ARouter.getInstance().build("/video/VideoActivity")
             .withInt("id", id)
@@ -145,6 +147,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
             .withString("authorName", authorName)
             .withString("authorIcon", authorIcon)
             .withString("authorDescription", authorDescription)
+            .withInt("likeCount", likeCount)
             .navigation()
     }
 
@@ -163,6 +166,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
         val background = recommend.data.cover.blurred
         val cover = recommend.data.cover.detail
         val playUrl = recommend.data.playUrl
+        val likeCount = recommend.data.consumption.collectionCount
 
         ARouter.getInstance().build("/video/VideoActivity")
             .withInt("id", id)
@@ -178,6 +182,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
             .withString("authorName", authorName)
             .withString("authorIcon", authorIcon)
             .withString("authorDescription", authorDescription)
+            .withInt("likeCount", likeCount)
             .navigation()
     }
 }

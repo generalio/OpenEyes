@@ -19,5 +19,6 @@ data class VideoInfo(
     val authorName: String,
     val authorIcon: String,
     val authorDescription: String,
-    val cover: String
+    val cover: String,
+    val likeCount: Int
 )

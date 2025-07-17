@@ -15,23 +15,13 @@ import com.github.anrwatchdog.ANRWatchDog
 
 class BaseApp : Application() {
 
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        lateinit var context: Context
-    }
-
     private val isDebug = true
 
     override fun onCreate() {
         super.onCreate()
 
-        context = applicationContext
-
         val anrWatchDog = ANRWatchDog()
         anrWatchDog.start()
-        anrWatchDog.setANRListener {
-            Log.e("ANR-WatchDog", "ANR detected!", it);
-        }
 
         if(isDebug) {
             ARouter.openLog()

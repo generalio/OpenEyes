@@ -11,7 +11,7 @@ import retrofit2.create
  * @Date : 2025/7/13 10:43
  */
 
-class ServiceCreator {
+object ServiceCreator {
 
     private val BASE_URL = "http://baobab.kaiyanapp.com/api/"
 

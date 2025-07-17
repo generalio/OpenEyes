@@ -1,6 +1,7 @@
 package com.generals.module.home.ui.activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -43,7 +44,7 @@ class HomeActivity : BaseActivity() {
         bottomNavigation.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bottom_home -> {
-                    viewPager2.currentItem = 0
+                    viewPager2.setCurrentItem(0, false)
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_square -> {
@@ -51,7 +52,7 @@ class HomeActivity : BaseActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_found -> {
-                    viewPager2.currentItem = 2
+                    viewPager2.setCurrentItem(2, false)
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_hot -> {
@@ -67,5 +68,9 @@ class HomeActivity : BaseActivity() {
                 bottomNavigation.menu.getItem(position).isChecked = true
             }
         })
+    }
+
+    fun showToast(content: String) {
+        Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
     }
 }
