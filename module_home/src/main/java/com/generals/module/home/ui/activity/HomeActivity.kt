@@ -39,8 +39,6 @@ class HomeActivity : BaseActivity() {
             { DiscoverFragment() }
         )
         viewPager2.adapter = VP2Adapter(this, fragmentList)
-        viewPager2.isUserInputEnabled = false //TODO: 暂且禁用滑动，后续优化
-//        bottomNavigation.selectedItemId = R.id.bottom_home
         bottomNavigation.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bottom_home -> {
