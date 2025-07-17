@@ -192,16 +192,20 @@ class VideoActivity : BaseActivity() {
             .setVideoAllCallBack(object : GSYSampleCallBack() {
                 override fun onPrepared(url: String?, vararg objects: Any?) {
                     super.onPrepared(url, *objects)
-                    orientationUtils.isEnable = true // 开始播放后才能全屏
+                    orientationUtils.isEnable = videoPlayer.isRotateWithSystem // 开始播放后才能全屏
                     isPlay = true
                 }
 
                 override fun onQuitFullscreen(url: String?, vararg objects: Any?) {
                     super.onQuitFullscreen(url, *objects)
-                    orientationUtils.backToProtVideo()
+                    if(orientationUtils != null) {
+                        orientationUtils.backToProtVideo()
+                    }
                 }
             }).setLockClickListener { _, lock ->
-                orientationUtils.isEnable = !lock
+                if(orientationUtils != null) {
+                    orientationUtils.isEnable = !lock
+                }
             }.build(videoPlayer)
         videoPlayer.fullscreenButton.setOnClickListener {
             orientationUtils.resolveByClick() // 直接横屏
@@ -209,16 +213,22 @@ class VideoActivity : BaseActivity() {
         }
         videoPlayer.backButton.setOnClickListener {
             if(!GSYVideoManager.backFromWindowFull(this@VideoActivity)) {
-                orientationUtils.backToProtVideo()
+                if(orientationUtils != null) {
+                    orientationUtils.backToProtVideo()
+                }
                 finish()
             } else {
-                orientationUtils.backToProtVideo()
+                if(orientationUtils != null) {
+                    orientationUtils.backToProtVideo()
+                }
             }
         }
 
         // 配置生命周期
         onBackPressedDispatcher.addCallback(this) {
-            orientationUtils.backToProtVideo()
+            if(orientationUtils != null) {
+                orientationUtils.backToProtVideo()
+            }
             if(GSYVideoManager.backFromWindowFull(this@VideoActivity)) {
                 return@addCallback
             }
@@ -241,11 +251,11 @@ class VideoActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if(isPlay) {
-            videoPlayer.onVideoPause()
+            videoPlayer.currentPlayer.release()
         }
-        videoPlayer.currentPlayer.release()
-        orientationUtils.releaseListener()
-        GSYVideoManager.releaseAllVideos()
+        if(orientationUtils != null) {
+            orientationUtils.releaseListener()
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
