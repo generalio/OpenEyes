@@ -214,11 +214,22 @@ class CategoryDisplayAdapter(
 
         private fun loadImage(url: String?, imageView: ImageView, defaultRes: Int) {
             if (!url.isNullOrEmpty()) {
-                Glide.with(itemView.context)
-                    .load(url.replace("http://", "https://"))
-                    .placeholder(defaultRes)
-                    .error(defaultRes)
-                    .into(imageView)
+                // 判断是否是作者头像，如果是则使用圆形裁剪
+                if (imageView == authorIcon) {
+                    Glide.with(itemView.context)
+                        .load(url.replace("http://", "https://"))
+                        .circleCrop()  // 圆形裁剪
+                        .placeholder(defaultRes)
+                        .error(defaultRes)
+                        .into(imageView)
+                } else {
+                    // 其他图片保持原样
+                    Glide.with(itemView.context)
+                        .load(url.replace("http://", "https://"))
+                        .placeholder(defaultRes)
+                        .error(defaultRes)
+                        .into(imageView)
+                }
             } else {
                 imageView.setImageResource(defaultRes)
             }
