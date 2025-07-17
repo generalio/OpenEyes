@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.module_discover.R
+import com.example.module_discover.model.bean.ImageItem
 import com.example.module_discover.model.bean.ThemeDetailItem
 import com.example.module_discover.model.bean.TitleItem
 import com.example.module_discover.model.bean.VideoItem
@@ -23,12 +24,19 @@ class ThemeDetailAdapter(
     companion object {
         const val TYPE_TITLE = 0
         const val TYPE_VIDEO = 1
+        const val TYPE_END = 2
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (list[position]) {
-            is TitleItem -> TYPE_TITLE
-            is VideoItem -> TYPE_VIDEO
+        // 如果是最后一个位置，显示 end 布局
+        return if (position == list.size) {
+            TYPE_END
+        } else {
+            when (list[position]) {
+                is TitleItem -> TYPE_TITLE
+                is VideoItem -> TYPE_VIDEO
+                else -> throw IllegalArgumentException("Unknown item type")
+            }
         }
     }
 
@@ -40,6 +48,9 @@ class ThemeDetailAdapter(
             TYPE_VIDEO -> VideoViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.activity_theme_video, parent, false)
             )
+            TYPE_END -> EndViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.layout_end, parent, false)
+            )
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
@@ -48,10 +59,13 @@ class ThemeDetailAdapter(
         when (holder) {
             is TitleViewHolder -> holder.bind(list[position] as TitleItem, listener)
             is VideoViewHolder -> holder.bind(list[position] as VideoItem, listener)
+            is EndViewHolder -> {
+                // End 布局不需要绑定数据，什么都不做
+            }
         }
     }
 
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = list.size + 1
 
     // 更新数据的方法
     fun updateData(newList: List<ThemeDetailItem>) {
@@ -60,21 +74,16 @@ class ThemeDetailAdapter(
     }
 }
 
-// 3. 修正后的ViewHolder
 class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val imageView: ImageView = itemView.findViewById(R.id.iv_theme_cover)
     private val textView: TextView = itemView.findViewById(R.id.tv_theme_title)
     private val subTextView: TextView = itemView.findViewById(R.id.tv_theme_desc)
 
     fun bind(item: TitleItem, listener: ThemeDetailClickListener?) {
-        // 绑定数据
         textView.text = item.title
         subTextView.text = item.subTitle
-
-        // 加载图片 - 使用你项目中的图片加载库，比如Glide或Picasso
         Glide.with(itemView.context).load(item.imageTitle).into(imageView)
 
-        // 设置点击事件
         itemView.setOnClickListener {
             listener?.onItemClick(adapterPosition, item)
         }
@@ -82,7 +91,6 @@ class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 }
 
 class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    // 根据你的布局文件修改这些ID
     private val iconImageView: ImageView = itemView.findViewById(R.id.iv_post_icon)
     private val iconNameTextView: TextView = itemView.findViewById(R.id.tv_post_title)
     private val timeTextView: TextView = itemView.findViewById(R.id.tv_publish_date)
@@ -94,8 +102,6 @@ class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val videoImageView: ImageView = itemView.findViewById(R.id.iv_video_thumbnail)
 
     fun bind(item: VideoItem, listener: ThemeDetailClickListener?) {
-        // 绑定数据
-
         iconNameTextView.text = item.iconName
         timeTextView.text = item.time
         titleTextView.text = item.title
@@ -104,13 +110,19 @@ class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tag2TextView.text = item.tag2
         tag3TextView.text = item.tag3
 
-        // 加载图片
         Glide.with(itemView.context).load(item.icon).apply(RequestOptions.circleCropTransform()).into(iconImageView)
         Glide.with(itemView.context).load(item.videoImage).into(videoImageView)
 
-        // 设置点击事件
         itemView.setOnClickListener {
             listener?.onItemClick(adapterPosition, item)
         }
+    }
+}
+
+class EndViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    // 构造函数中就设置好图片，不需要 bind 方法
+    init {
+        val imageView: ImageView = itemView.findViewById(R.id.imageView7)
+        imageView.setImageResource(R.drawable.end)
     }
 }

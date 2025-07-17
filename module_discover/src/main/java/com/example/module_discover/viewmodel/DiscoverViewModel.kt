@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.module_discover.model.bean.CategoryResponse
+import com.example.module_discover.model.bean.ImageItem
 import com.example.module_discover.model.bean.SpecialTopicsDetailResponse
 import com.example.module_discover.model.bean.SpecialTopicsResponse
 import com.example.module_discover.model.bean.ThemeDetailItem
@@ -164,12 +165,9 @@ class DiscoverViewModel : ViewModel() {
                         title = detail.brief ?: "",
                         subTitle = detail.text,
                         shareLink = detail.shareLink
-
                     )
-
                     // 添加标题项到列表
                     themeDetailList.add(titleItem)
-
                     // 处理视频项
                     detail.itemList.forEachIndexed { index, item ->
                         try {
@@ -194,6 +192,7 @@ class DiscoverViewModel : ViewModel() {
                             // 添加视频项到列表
                             themeDetailList.add(videoItem)
 
+
                         } catch (e: Exception) {
                             Log.e("DiscoverViewModel", "处理第 $index 个视频项出错: ${e.message}")
                         }
@@ -214,6 +213,7 @@ class DiscoverViewModel : ViewModel() {
             }
         }
     }
+
     fun formatTimestamp(timestamp: Long): String {
         // 1. 将时间戳转换为 Instant 对象（UTC 时间）
         val instant = Instant.ofEpochMilli(timestamp)

@@ -6,6 +6,10 @@
             android:name="com.example.module_discover.ui.activity.ThemeActivity"
             android:exported="false"
              />
+        <activity
+            android:name="com.example.module_discover.ui.activity.CategoryDetailActivity"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

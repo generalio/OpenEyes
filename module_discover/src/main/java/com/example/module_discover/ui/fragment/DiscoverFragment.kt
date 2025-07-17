@@ -18,6 +18,7 @@ import com.example.module_discover.R
 import com.example.module_discover.ui.adapter.CategoryAdapter
 import com.example.module_discover.model.bean.CategoryItem
 import com.example.module_discover.model.bean.ThemeItem
+import com.example.module_discover.ui.activity.CategoryDetailActivity
 import com.example.module_discover.ui.activity.ThemeActivity
 import com.example.module_discover.ui.adapter.OnCategoryItemClickListener
 import com.example.module_discover.ui.adapter.ThemeAdapter
@@ -52,6 +53,12 @@ class DiscoverFragment : Fragment() {
         CategoryItem(R.drawable.car, "萌宠", 26),
     )
 
+    private val defaultThemeList = listOf(
+        ThemeItem(0, "加载中...", "默认描述1"),
+        ThemeItem(1, "加载中...", "默认描述2"),
+        ThemeItem(2, "加载中...", "默认描述3"),
+    )
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -79,13 +86,11 @@ class DiscoverFragment : Fragment() {
         first_recyclerView = view.findViewById(R.id.category_recyclerView)
         Second_recyclerView = view.findViewById(R.id.theme_playlist_recyclerView)
 
-        // 初始化 ThemeAdapter，传入空列表
-        themeAdapter = ThemeAdapter(emptyList(), object : ThemeItemClickListener {
+        // 初始化 ThemeAdapter
+        themeAdapter = ThemeAdapter(defaultThemeList, object : ThemeItemClickListener {
             override fun onItemClick(position: Int, item: ThemeItem) {
-                val message = "点击了 ${item.title}，ID: ${item.id}"
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 val intent = Intent(requireContext(), ThemeActivity::class.java)
-                intent.putExtra("key_id", item.id)  // 传递主题ID
+                intent.putExtra("key_id", item.id)
                 startActivity(intent)
             }
         })
@@ -94,30 +99,35 @@ class DiscoverFragment : Fragment() {
         val horizontalLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         Second_recyclerView.layoutManager = horizontalLayoutManager
         Second_recyclerView.adapter = themeAdapter
-
-        // 添加水平滑动的优化设置
         Second_recyclerView.setHasFixedSize(true)
         Second_recyclerView.isNestedScrollingEnabled = false
 
-        val gridLayoutManager = GridLayoutManager(requireContext(), 3) // 3列网格
+        // 设置分类网格布局
+        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
         first_recyclerView.layoutManager = gridLayoutManager
         first_recyclerView.adapter = CategoryAdapter(categoryList, object : OnCategoryItemClickListener {
             override fun onItemClick(position: Int, item: CategoryItem) {
                 val message = "点击了 ${item.CategoryName}，ID: ${item.id}"
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
+                // 跳转到改进后的分类详情页面
+                val intent = Intent(requireContext(), CategoryDetailActivity::class.java)
+                intent.putExtra("key_id", item.id)
+                intent.putExtra("key_name",item.CategoryName)
+                //intent.putExtra("key_description",item.CategoryName+"为生活增加色彩")
+                startActivity(intent)
             }
         })
 
-        // 添加日志验证
         Log.d("DiscoverFragment", "RecyclerView 初始化完成，数据数量: ${categoryList.size}")
     }
+
+
 
     private fun setupObservers() {
         // 观察主题数据变化
         viewModel.themeList.observe(viewLifecycleOwner) { themeList ->
             themeList?.let {
-                // 更新适配器数据
                 themeAdapter.updateData(it)
                 Log.d("DiscoverFragment", "ThemeList 数据更新，数量: ${it.size}")
             }
@@ -125,7 +135,6 @@ class DiscoverFragment : Fragment() {
 
         // 观察加载状态
         viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            // 可以在这里显示/隐藏加载指示器
             Log.d("DiscoverFragment", "加载状态: $isLoading")
         }
 

@@ -3,13 +3,16 @@ package com.example.module_discover.ui.activity
 import ThemeDetailAdapter
 import ThemeDetailClickListener
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.module_discover.R
+import com.example.module_discover.model.bean.ImageItem
 import com.example.module_discover.model.bean.ThemeDetailItem
 import com.example.module_discover.model.bean.TitleItem
 import com.example.module_discover.model.bean.VideoItem
@@ -21,6 +24,7 @@ class ThemeActivity : BaseActivity() {
     private lateinit var buttonShare: Button
     private lateinit var textView: TextView
     private lateinit var recyclerView: RecyclerView
+    private lateinit var progressBar:ProgressBar
     private lateinit var themeDetailAdapter: ThemeDetailAdapter
 
     // 使用 viewModels() 委托获取 ViewModel
@@ -50,6 +54,7 @@ class ThemeActivity : BaseActivity() {
         buttonShare = findViewById(R.id.activity_theme_button_share)
         textView = findViewById(R.id.activity_theme_textView_title)
         recyclerView = findViewById(R.id.activity_theme_recyclerview)
+        progressBar=findViewById(R.id.progressBar2)
     }
 
     private fun initEvent() {
@@ -69,6 +74,7 @@ class ThemeActivity : BaseActivity() {
                         // intent.putExtra("video_url", item.videoUrl)
                         // startActivity(intent)
                     }
+                    is ImageItem->{}
                 }
             }
         })
@@ -108,10 +114,10 @@ class ThemeActivity : BaseActivity() {
             // 这里可以显示/隐藏加载进度条
             if (isLoading) {
                 // 显示加载状态
-                // progressBar.visibility = View.VISIBLE
+                progressBar.visibility = View.VISIBLE
             } else {
                 // 隐藏加载状态
-                // progressBar.visibility = View.GONE
+                progressBar.visibility = View.GONE
             }
         }
 
