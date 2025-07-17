@@ -13,6 +13,8 @@ import com.generals.module.home.model.net.HomeRepository
 
 class RecommendViewModel : ViewModel() {
 
-    fun getRecommend() = HomeRepository.getRecommend().flow.cachedIn(viewModelScope)
+    private val recommendFlow = HomeRepository.getRecommend().flow.cachedIn(viewModelScope)
+
+    fun getRecommend() = recommendFlow
 
 }

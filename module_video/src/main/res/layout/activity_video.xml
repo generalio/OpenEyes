@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.VideoActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_video"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
+            android:id="@+id/video_player"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_video"
+            android:layout_width="160dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="4dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/video_player"
+            app:tabIndicatorColor="@android:color/white"
+            app:tabMode="fixed"
+            app:tabIndicatorFullWidth="false"
+            app:tabTextAppearance="@style/TabTextStyle"
+            app:tabSelectedTextColor="#FFFFFF"
+            app:tabIndicatorHeight="1dp"
+            app:tabTextColor="#CCFFFFFF" />
+
+        <View
+            android:id="@+id/divide_line"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="#30323b"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintTop_toBottomOf="@+id/tab_video"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp2_video"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/divide_line" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.generals.module.video.ui.custom.LoadingLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/layout_detail_loading"
+    android:background="@android:color/transparent"
+    tools:context=".ui.fragment.VideoDetailFragment">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/ic_loading"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="-36dp" />
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_video_detail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</com.generals.module.video.ui.custom.LoadingLayout>

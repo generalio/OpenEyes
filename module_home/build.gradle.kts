@@ -50,15 +50,16 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(project(":module_discover"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.bundles.projectBase)
-//    kapt(libs.arouter.compiler)
+    implementation(libs.arouter.api)
+    kapt(libs.arouter.compiler)
 
     implementation(project(":lib_base"))
     implementation(project(":lib_net"))
     implementation(project(":module_discover"))
+
 }

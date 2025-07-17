@@ -1,7 +1,10 @@
 package com.generals.module.home.ui.activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
+import com.alibaba.android.arouter.facade.annotation.Route
+import com.alibaba.android.arouter.launcher.ARouter
 import com.example.module_discover.ui.fragment.DiscoverFragment
 import com.generals.lib.base.BaseActivity
 import com.generals.module.home.R
@@ -9,6 +12,7 @@ import com.generals.module.home.ui.adapter.VP2Adapter
 import com.generals.module.home.ui.fragment.HomeFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
+@Route(path = "/home/HomeActivity")
 class HomeActivity : BaseActivity() {
 
     private lateinit var viewPager2: ViewPager2
@@ -17,6 +21,7 @@ class HomeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        ARouter.getInstance().inject(this)
         initView()
         initEvent()
 
@@ -34,12 +39,10 @@ class HomeActivity : BaseActivity() {
             { DiscoverFragment() }
         )
         viewPager2.adapter = VP2Adapter(this, fragmentList)
-        viewPager2.isUserInputEnabled = false //TODO: 暂且禁用滑动，后续优化
-//        bottomNavigation.selectedItemId = R.id.bottom_home
         bottomNavigation.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bottom_home -> {
-                    viewPager2.currentItem = 0
+                    viewPager2.setCurrentItem(0, false)
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_square -> {
@@ -47,7 +50,7 @@ class HomeActivity : BaseActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_found -> {
-                    viewPager2.currentItem = 2
+                    viewPager2.setCurrentItem(2, false)
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_hot -> {
@@ -63,5 +66,9 @@ class HomeActivity : BaseActivity() {
                 bottomNavigation.menu.getItem(position).isChecked = true
             }
         })
+    }
+
+    fun showToast(content: String) {
+        Toast.makeText(this, content, Toast.LENGTH_SHORT).show()
     }
 }

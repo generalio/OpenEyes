@@ -21,17 +21,35 @@ import com.generals.module.home.model.bean.daily.Daily
  * @Date : 2025/7/14 11:18
  */
 
-class DailyAdapter() : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Daily>() {
+class DailyAdapter(val itemClickListener: OnItemClickListener) : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Daily>() {
     /**
      * 接口没有唯一ID标识符(id基本都是0，header字段里的id不为0，但是text又没有header字段容易爆红)
      * 故这里只能粗暴处理，导致每次切换后台回来都会重新刷新一遍
+     * 二则：解决了不是差分刷新的问题，是flow的问题，详细见viewmodel
      */
     override fun areContentsTheSame(oldItem: Daily, newItem: Daily): Boolean {
-        return true
+        return newItem == oldItem
     }
 
     override fun areItemsTheSame(oldItem: Daily, newItem: Daily): Boolean {
-        return true
+//        var newId = 0
+//        if(newItem.data.type == "textCard") {
+//            newId = oldItem.data.id
+//        } else {
+//            if(newItem.data.type == "followCard") {
+//                newId = newItem.data.content.data.id
+//            }
+//        }
+//
+//        var oldId = 0
+//        if(oldItem.data.type == "textCard") {
+//            oldId = oldItem.data.id
+//        } else {
+//            if(oldItem.data.type == "followCard") {
+//                oldId = oldItem.data.content.data.id
+//            }
+//        }
+        return newItem == oldItem // 粗暴解决
     }
 
 } ) {
@@ -58,7 +76,7 @@ class DailyAdapter() : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object 
 
         init {
             mIvCover.setOnClickListener {
-
+                itemClickListener.onVideoClick(getItem(bindingAdapterPosition)!!)
             }
         }
     }

@@ -56,34 +56,14 @@ abstract class BaseActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT //把状态栏颜色设置成透明
     }
 
-    private val context: Context = this
-
-    //设置Toast
-    fun showToast(content: String) {
-        Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
-    }
-
-    //设置dialog
-    fun showCancelDialog(title: String, content: String, block: () -> Unit) {
-        AlertDialog.Builder(context).apply {
-            setTitle(title)
-            setMessage(content)
-            setPositiveButton("确认") { _, which -> block() }
-            setNegativeButton("取消") { dialog, which -> }
-            show()
-        }
-    }
-
     //检查网络是否链接
     @SuppressLint("ServiceCast")
     fun isNetworkAvailable(): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        // 这里不能用context.getSystemService()，容易导致内存泄漏，应该使用applicationContext,这样持有的就是application了
+        val connectivityManager = applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork ?: return false
         val networkCapabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
         val isAvailable = networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-        if (!isAvailable) {
-            showToast("网络连接失败，请检查您的网络设置")
-        }
         return isAvailable
     }
 
