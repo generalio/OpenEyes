@@ -48,7 +48,7 @@ class ThemeAdapter(
     private fun loadImage(imageView: ImageView, imageUrl: String) {
         if (imageUrl.isEmpty()) {
             // 如果图片URL为空，显示默认图片
-            imageView.setImageResource(R.drawable.car)
+            imageView.setImageResource(R.drawable.test_icon)
             return
         }
 
@@ -59,8 +59,8 @@ class ThemeAdapter(
                 RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
-                    .placeholder(R.drawable.car) // 添加占位图
-                    .error(R.drawable.car) // 添加错误图片
+                    .placeholder(R.drawable.test_icon) // 添加占位图
+                    .error(R.drawable.test_icon) // 添加错误图片
             )
             .into(imageView)
     }

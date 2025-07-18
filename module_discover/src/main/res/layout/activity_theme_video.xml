@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_post_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/test_icon" />
+
+    <TextView
+        android:id="@+id/tv_post_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:text="全球创意视频精选"
+        android:textColor="@color/black"
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/iv_post_icon"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_publish_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="2023/09/05 发布："
+        app:layout_constraintBottom_toBottomOf="@+id/iv_post_icon"
+        app:layout_constraintStart_toEndOf="@+id/iv_post_icon" />
+
+    <TextView
+        android:id="@+id/tv_post_subtitle"
+        android:layout_width="120dp"
+        android:layout_height="20dp"
+        android:text="371 种声音，直接让你..."
+        android:layout_marginStart="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginBottom="-1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_post_icon"
+        app:layout_constraintStart_toEndOf="@+id/tv_publish_date" />
+
+    <TextView
+        android:id="@+id/tv_post_content"
+        android:layout_width="340dp"
+        android:layout_height="wrap_content"
+        android:text="创作者花了十年时间收集拍摄素材，制作了这个 50 秒的短片和 371 个声音。吐司片从面包机里弹出的声音、倒咖啡的声音、转动旋钮按下按钮的声音、鸟叫的声音、闹钟的声音、打鼓的声音汇集在一起，穿插着多幅精美的摄影和艺术作品，简直是一段 50 秒的「艺术盛宴」。 From From Form"
+        android:textColor="@color/black"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_post_icon" />
+
+    <TextView
+        android:id="@+id/tv_tag_inspiration"
+        android:background="@drawable/activity_theme_tag_background"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:text="每日创意灵感"
+        android:textStyle="bold"
+        android:textColor="#3395FF"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_post_content" />
+
+    <TextView
+        android:id="@+id/tv_tag_retro"
+        android:background="@drawable/activity_theme_tag_background"
+        android:gravity="center"
+        android:text="复古"
+        android:textStyle="bold"
+        android:textColor="#3395FF"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@+id/tv_tag_inspiration"
+        app:layout_constraintTop_toBottomOf="@+id/tv_post_content" />
+
+    <TextView
+        android:id="@+id/tv_tag_beautiful"
+        android:background="@drawable/activity_theme_tag_background"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:textStyle="bold"
+        android:textColor="#3395FF"
+        android:gravity="center"
+        android:text="唯美"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@+id/tv_tag_retro"
+        app:layout_constraintTop_toBottomOf="@+id/tv_post_content" />
+
+    <ImageView
+        android:id="@+id/iv_video_thumbnail"
+        android:layout_width="340dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/rounded_corners"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_tag_beautiful"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"
+        android:layout_marginBottom="10dp"/>
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:layout_marginTop="8dp"
+        android:background="#EEEEEE"
+        app:layout_constraintBottom_toBottomOf="@id/iv_video_thumbnail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
+
+    <ImageView
+        android:id="@+id/iv_play_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_video_thumbnail"
+        app:layout_constraintEnd_toEndOf="@+id/iv_video_thumbnail"
+        app:layout_constraintStart_toStartOf="@+id/iv_video_thumbnail"
+        app:layout_constraintTop_toTopOf="@+id/iv_video_thumbnail"
+        app:srcCompat="@drawable/play" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

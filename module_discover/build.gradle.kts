@@ -5,6 +5,12 @@ plugins {
     kotlin("kapt")
 }
 
+kapt {
+    arguments {
+        arg("AROUTER_MODULE_NAME", project.name)
+    }
+}
+
 android {
     namespace = "com.example.module_discover"
     compileSdk = 35
@@ -46,7 +52,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.bundles.projectBase)
-//    kapt(libs.arouter.compiler)
+    implementation(libs.arouter.api)
+    kapt(libs.arouter.compiler)
 
     implementation(project(":lib_base"))
     implementation(project(":lib_net"))

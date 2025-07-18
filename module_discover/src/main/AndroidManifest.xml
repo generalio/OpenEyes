@@ -2,7 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-
+        <activity
+            android:name="com.example.module_discover.ui.activity.ThemeActivity"
+            android:exported="false"
+             />
+        <activity
+            android:name="com.example.module_discover.ui.activity.CategoryDetailActivity"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

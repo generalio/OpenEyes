@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="340dp">
+
+    <ImageView
+        android:id="@+id/iv_theme_cover"
+        android:layout_width="wrap_content"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+    <TextView
+        android:id="@+id/tv_theme_title"
+        android:layout_width="350dp"
+        android:layout_height="55dp"
+        android:text="一万点暴击！触发大脑「螺旋升天」"
+        android:gravity="center"
+        android:background="@drawable/activity_theme_title_background"
+        android:layout_marginTop="-30dp"
+        android:textColor="@color/black"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_theme_cover" />
+
+    <TextView
+        android:id="@+id/tv_theme_desc"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:text="眼睛耳朵双重高潮！开眼为您精选了 7 支「爽感十足」的短片，不多说，一起来感受酥麻感。"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_theme_title" />
+</androidx.constraintlayout.widget.ConstraintLayout>
