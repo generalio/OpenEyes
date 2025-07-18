@@ -14,7 +14,8 @@ import com.bumptech.glide.Glide
 import com.example.module_discover.R
 import com.example.module_discover.model.bean.CategoryDetailItem
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 class CategoryDisplayAdapter(
     private val onItemClick: (CategoryDetailItem) -> Unit = {},
@@ -43,51 +44,10 @@ class CategoryDisplayAdapter(
 
     override fun onBindViewHolder(holder: CategoryDisplayViewHolder, position: Int) {
         val item = getItem(position)
-        if (item != null && canDisplayItem(item)) {
+        if (item != null) {
             holder.bind(item, position)
         } else {
-            // 不能显示的item，隐藏这个ViewHolder
             holder.hideItem()
-        }
-    }
-
-    private fun canDisplayItem(item: CategoryDetailItem): Boolean {
-        try {
-            when (item.type) {
-                "followCard" -> {
-                    // 检查followCard是否有完整的数据结构
-                    val data = item.data ?: return false
-                    val content = data.content ?: return false
-                    val videoData = content.data ?: return false
-
-                    // 至少要有标题或作者信息
-                    return !videoData.title.isNullOrEmpty() ||
-                            !videoData.author?.name.isNullOrEmpty() ||
-                            !data.header?.title.isNullOrEmpty()
-                }
-
-                "videoSmallCard" -> {
-                    // 检查videoSmallCard是否有基本数据
-                    val data = item.data ?: return false
-
-                    // 至少要有标题或作者信息
-                    return !data.title.isNullOrEmpty() ||
-                            !data.author?.name.isNullOrEmpty()
-                }
-
-                "textCard" -> {
-                    // textCard暂时不显示
-                    return false
-                }
-
-                else -> {
-                    // 其他类型暂时不显示
-                    return false
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "检查item是否可显示时出错", e)
-            return false
         }
     }
 
@@ -109,19 +69,100 @@ class CategoryDisplayAdapter(
                 layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 itemView.layoutParams = layoutParams
 
+                // 根据实际JSON数据结构获取信息
                 when (item.type) {
-                    "followCard" -> bindFollowCard(item, position)
-                    "videoSmallCard" -> bindVideoCard(item, position)
-                    else -> hideItem()
+                    "followCard" -> {
+                        bindFollowCard(item, position)
+                    }
+                    else -> {
+                        // 其他类型暂时隐藏
+                        hideItem()
+                        return
+                    }
                 }
 
                 // 设置点击事件
                 itemView.setOnClickListener { onItemClick(item) }
                 shareButton.setOnClickListener { onShareClick(item) }
 
+                Log.d(TAG, "成功绑定数据 - position: $position, 类型: ${item.type}")
+
             } catch (e: Exception) {
                 Log.e(TAG, "绑定数据时出现异常 - position: $position", e)
                 hideItem()
+            }
+        }
+
+        private fun bindFollowCard(item: CategoryDetailItem, position: Int) {
+            try {
+                // 根据你的JSON数据结构，正确获取数据
+                val data = item.data
+                val header = data?.header
+                val content = data?.content
+                val videoData = content?.data
+
+                // 设置作者信息 - 优先使用header中的信息
+                val authorNameText = header?.title ?: videoData?.author?.name ?: "未知作者"
+                authorName.text = authorNameText
+
+                // 设置发布时间 - 使用header中的time
+                val timestamp = header?.time ?: videoData?.releaseTime
+                videoInfo.text = formatTime(timestamp)
+
+                // 设置描述 - 优先使用视频的描述
+                val desc = videoData?.descriptionEditor?.takeIf { it.isNotEmpty() }
+                    ?: videoData?.description?.takeIf { it.isNotEmpty() }
+                    ?: videoData?.title?.takeIf { it.isNotEmpty() }
+                    ?: "无描述"
+                description.text = desc
+
+                // 设置互动数据
+                val consumption = videoData?.consumption
+                likeCount.text = formatCount(consumption?.collectionCount ?: 0)
+                collectCount.text = formatCount(consumption?.realCollectionCount ?: 0)
+                commentCount.text = formatCount(consumption?.replyCount ?: 0)
+
+                // 加载作者头像 - 优先使用header中的icon
+                loadAuthorIcon(header?.icon ?: videoData?.author?.icon)
+
+                // 加载视频缩略图
+                loadVideoThumbnail(videoData?.cover?.feed)
+
+                Log.d(TAG, "bindFollowCard成功 - 标题: ${videoData?.title}")
+
+            } catch (e: Exception) {
+                Log.e(TAG, "bindFollowCard失败", e)
+                hideItem()
+            }
+        }
+
+        private fun loadAuthorIcon(iconUrl: String?) {
+            if (!iconUrl.isNullOrEmpty()) {
+                Glide.with(itemView.context)
+                    .load(iconUrl)
+                    .circleCrop()
+                    .placeholder(R.drawable.test_icon)
+                    .error(R.drawable.test_icon)
+                    .into(authorIcon)
+            } else {
+                // 没有图片时显示默认头像
+                Glide.with(itemView.context)
+                    .load(R.drawable.test_icon)
+                    .circleCrop()
+                    .into(authorIcon)
+            }
+        }
+
+        private fun loadVideoThumbnail(thumbnailUrl: String?) {
+            if (!thumbnailUrl.isNullOrEmpty()) {
+                Glide.with(itemView.context)
+                    .load(thumbnailUrl)
+                    .placeholder(R.drawable.test_img)
+                    .error(R.drawable.test_img)
+                    .into(videoThumbnail)
+            } else {
+                // 没有图片时显示默认图片
+                videoThumbnail.setImageResource(R.drawable.test_img)
             }
         }
 
@@ -131,129 +172,26 @@ class CategoryDisplayAdapter(
             layoutParams.height = 0
             itemView.layoutParams = layoutParams
         }
+    }
 
-        private fun bindFollowCard(item: CategoryDetailItem, position: Int) {
-            try {
-                val data = item.data!!
-                val content = data.content!!
-                val videoData = content.data!!
-
-                Log.d(TAG, "显示followCard - title: ${videoData.title}")
-
-                // 设置作者信息 - 优先使用header
-                val authorNameText = data.header?.title ?: videoData.author?.name ?: "未知作者"
-                authorName.text = authorNameText
-
-                // 设置作者头像
-                val authorIconUrl = data.header?.icon ?: videoData.author?.icon
-                loadImage(authorIconUrl, authorIcon, R.drawable.test_icon)
-
-                // 设置时间
-                val time = data.header?.time ?: videoData.date ?: videoData.releaseTime
-                videoInfo.text = formatTime(time)
-
-                // 设置视频缩略图
-                loadImage(videoData.cover?.feed, videoThumbnail, R.drawable.test_img)
-
-                // 设置描述
-                val desc = videoData.descriptionEditor?.takeIf { it.isNotEmpty() }
-                    ?: videoData.description?.takeIf { it.isNotEmpty() }
-                    ?: videoData.title?.takeIf { it.isNotEmpty() }
-                    ?: "无描述"
-                description.text = desc
-
-                // 设置互动数据
-                val consumption = videoData.consumption
-                likeCount.text = formatCount(consumption?.collectionCount ?: 0)
-                collectCount.text = formatCount(consumption?.realCollectionCount ?: 0)
-                commentCount.text = formatCount(consumption?.replyCount ?: 0)
-
-            } catch (e: Exception) {
-                Log.e(TAG, "bindFollowCard失败", e)
-                hideItem()
-            }
+    private fun formatCount(count: Int): String {
+        return when {
+            count < 1000 -> count.toString()
+            count < 10000 -> String.format("%.1fk", count / 1000.0)
+            else -> String.format("%.1fw", count / 10000.0)
         }
+    }
 
-        private fun bindVideoCard(item: CategoryDetailItem, position: Int) {
-            try {
-                val data = item.data!!
-
-                Log.d(TAG, "显示videoCard - title: ${data.title}")
-
-                // 设置作者信息
-                authorName.text = data.author?.name ?: "未知作者"
-
-                // 设置作者头像
-                loadImage(data.author?.icon, authorIcon, R.drawable.test_icon)
-
-                // 设置时间
-                val time = data.date ?: data.releaseTime
-                videoInfo.text = formatTime(time)
-
-                // 设置视频缩略图
-                loadImage(data.cover?.feed, videoThumbnail, R.drawable.test_img)
-
-                // 设置描述
-                val desc = data.descriptionEditor?.takeIf { it.isNotEmpty() }
-                    ?: data.description?.takeIf { it.isNotEmpty() }
-                    ?: data.title?.takeIf { it.isNotEmpty() }
-                    ?: "无描述"
-                description.text = desc
-
-                // 设置互动数据
-                val consumption = data.consumption
-                likeCount.text = formatCount(consumption?.collectionCount ?: 0)
-                collectCount.text = formatCount(consumption?.realCollectionCount ?: 0)
-                commentCount.text = formatCount(consumption?.replyCount ?: 0)
-
-            } catch (e: Exception) {
-                Log.e(TAG, "bindVideoCard失败", e)
-                hideItem()
-            }
-        }
-
-        private fun loadImage(url: String?, imageView: ImageView, defaultRes: Int) {
-            if (!url.isNullOrEmpty()) {
-                // 判断是否是作者头像，如果是则使用圆形裁剪
-                if (imageView == authorIcon) {
-                    Glide.with(itemView.context)
-                        .load(url.replace("http://", "https://"))
-                        .circleCrop()  // 圆形裁剪
-                        .placeholder(defaultRes)
-                        .error(defaultRes)
-                        .into(imageView)
-                } else {
-                    // 其他图片保持原样
-                    Glide.with(itemView.context)
-                        .load(url.replace("http://", "https://"))
-                        .placeholder(defaultRes)
-                        .error(defaultRes)
-                        .into(imageView)
-                }
-            } else {
-                imageView.setImageResource(defaultRes)
-            }
-        }
-
-        private fun formatCount(count: Int): String {
-            return when {
-                count < 1000 -> count.toString()
-                count < 10000 -> String.format("%.1fk", count / 1000.0)
-                else -> String.format("%.1fw", count / 10000.0)
-            }
-        }
-
-        private fun formatTime(timestamp: Long?): String {
-            return try {
-                if (timestamp == null || timestamp <= 0) {
-                    "未知时间"
-                } else {
-                    val sdf = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
-                    sdf.format(Date(timestamp))
-                }
-            } catch (e: Exception) {
+    private fun formatTime(timestamp: Long?): String {
+        return try {
+            if (timestamp == null || timestamp <= 0) {
                 "未知时间"
+            } else {
+                val sdf = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+                sdf.format(Date(timestamp))
             }
+        } catch (e: Exception) {
+            "未知时间"
         }
     }
 }

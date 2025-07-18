@@ -1,8 +1,7 @@
 package com.example.module_discover.ui.activity
 
-import ThemeDetailAdapter
-import ThemeDetailClickListener
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
@@ -11,12 +10,13 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.android.arouter.launcher.ARouter
 import com.example.module_discover.R
-import com.example.module_discover.model.bean.ImageItem
-import com.example.module_discover.model.bean.ThemeDetailItem
-import com.example.module_discover.model.bean.TitleItem
-import com.example.module_discover.model.bean.VideoItem
-import com.example.module_discover.viewmodel.DiscoverViewModel
+import com.example.module_discover.model.bean.Item_detail
+import com.example.module_discover.ui.adapter.NewThemeDetailAdapter
+import com.example.module_discover.ui.adapter.NewThemeDetailClickListener
+import com.example.module_discover.model.bean.SpecialTopicsDetailResponse
+import com.example.module_discover.viewmodel.NewCategoryViewModel
 import com.generals.lib.base.BaseActivity
 
 class ThemeActivity : BaseActivity() {
@@ -24,29 +24,26 @@ class ThemeActivity : BaseActivity() {
     private lateinit var buttonShare: Button
     private lateinit var textView: TextView
     private lateinit var recyclerView: RecyclerView
-    private lateinit var progressBar:ProgressBar
-    private lateinit var themeDetailAdapter: ThemeDetailAdapter
+    private lateinit var progressBar: ProgressBar
+    private lateinit var adapter: NewThemeDetailAdapter
+    private var currentClickedPosition = -1
 
     // 使用 viewModels() 委托获取 ViewModel
-    private val viewModel: DiscoverViewModel by viewModels()
+    private val viewModel: NewCategoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_theme)
 
         // 获取传递的 ID
-        val id = intent.getIntExtra("key_id", 0)
+        val id = intent.getIntExtra("key_id", 12)
 
         initView()
         initEvent()
         observeViewModel()
 
         // 加载数据
-        if (id != 0) {
-            viewModel.loadThemeDetailItemData(id)
-        } else {
-            Toast.makeText(this, "无效的主题ID", Toast.LENGTH_SHORT).show()
-        }
+        viewModel.loadData(id)
     }
 
     private fun initView() {
@@ -54,33 +51,39 @@ class ThemeActivity : BaseActivity() {
         buttonShare = findViewById(R.id.activity_theme_button_share)
         textView = findViewById(R.id.activity_theme_textView_title)
         recyclerView = findViewById(R.id.activity_theme_recyclerview)
-        progressBar=findViewById(R.id.progressBar2)
+        progressBar = findViewById(R.id.progressBar2)
     }
 
     private fun initEvent() {
         // 初始化适配器
-        themeDetailAdapter = ThemeDetailAdapter(emptyList(), object : ThemeDetailClickListener {
-            override fun onItemClick(position: Int, item: ThemeDetailItem) {
-                when (item) {
-                    is TitleItem -> {
-                        // 处理标题点击
-                        Toast.makeText(this@ThemeActivity, "点击了标题: ${item.title}", Toast.LENGTH_SHORT).show()
+        adapter = NewThemeDetailAdapter(mutableListOf(), object : NewThemeDetailClickListener {
+            override fun onItemClick(position: Int, item: SpecialTopicsDetailResponse) {
+                // 处理点击事件
+                when (position) {
+                    0 -> {
+                        // 点击了标题
+                        Toast.makeText(this@ThemeActivity, "点击了标题: ${item.brief}", Toast.LENGTH_SHORT).show()
                     }
-                    is VideoItem -> {
-                        // 处理视频点击
-                        Toast.makeText(this@ThemeActivity, "点击了视频: ${item.title}", Toast.LENGTH_SHORT).show()
-                        // 这里可以跳转到视频播放页面
-                        // val intent = Intent(this@ThemeActivity, VideoPlayerActivity::class.java)
-                        // intent.putExtra("video_url", item.videoUrl)
-                        // startActivity(intent)
+                    else -> {
+                        // 点击了视频项
+                        Toast.makeText(this@ThemeActivity, "点击了内容: ${item.brief}", Toast.LENGTH_SHORT).show()
+                        // 这里可以跳转到详情页面
+                        playVideo(item)
                     }
-                    is ImageItem->{}
                 }
+            }
+
+            // 添加这个方法的实现
+            override fun onVideoItemClick(position: Int, videoItem: Item_detail, parentItem: SpecialTopicsDetailResponse) {
+                // 存储当前点击的位置
+                currentClickedPosition = position
+                // 调用原来的方法
+                playVideo(parentItem)
             }
         })
 
         // 设置适配器和布局管理器
-        recyclerView.adapter = themeDetailAdapter
+        recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // 返回按钮点击事件
@@ -88,35 +91,75 @@ class ThemeActivity : BaseActivity() {
             finish()
         }
 
-        // 分享按钮点击事件
+         //分享按钮点击事件
         buttonShare.setOnClickListener {
-            // 实现分享功能
             shareTheme()
         }
     }
 
-    private fun observeViewModel() {
-        // 观察主题详情数据
-        viewModel.themeDetailList.observe(this) { themeDetailList ->
-            themeDetailList?.let {
-                themeDetailAdapter.updateData(it)
+    private fun playVideo(item: SpecialTopicsDetailResponse) {
+        try {
+            // 获取当前点击的视频项索引
+            val clickedPosition = getCurrentVideoPosition() // 需要传入实际的位置
 
-                // 更新标题（从第一个TitleItem获取）
-                val titleItem = it.firstOrNull { item -> item is TitleItem } as? TitleItem
-                titleItem?.let { title ->
-                    textView.text = title.title
-                }
+            if (clickedPosition >= 0 && clickedPosition < item.itemList.size) {
+                val videoItem = item.itemList[clickedPosition]
+
+                val id = videoItem.data.content.data.id
+                val title = videoItem.data.content.data.title
+                val authorName = videoItem.data.content.data.author?.name ?: ""
+                val authorIcon = videoItem.data.content.data.author?.icon ?: ""
+                val authorDescription = videoItem.data.content.data.author?.description ?: ""
+                val subTitle = "${authorName} / #${videoItem.data.content.data.category}"
+                val description = videoItem.data.content.data.description
+                val collectionCount = videoItem.data.content.data.consumption?.collectionCount ?: 0
+                val shareCount = videoItem.data.content.data.consumption?.shareCount ?: 0
+                val replyCount = videoItem.data.content.data.consumption?.replyCount ?: 0
+                val background = videoItem.data.content.data.cover?.blurred ?: ""
+                val cover = videoItem.data.content.data.cover?.detail ?: ""
+                val playUrl = videoItem.data.content.data.playUrl ?: ""
+                val likeCount = videoItem.data.content.data.consumption?.collectionCount ?: 0
+
+                Log.d("ZXY", subTitle)
+
+                ARouter.getInstance().build("/video/VideoActivity")
+                    .withInt("id", id)
+                    .withString("title", title)
+                    .withString("subTitle", subTitle)
+                    .withString("description", description)
+                    .withInt("collectionCount", collectionCount)
+                    .withInt("shareCount", shareCount)
+                    .withInt("replyCount", replyCount)
+                    .withString("background", background)
+                    .withString("cover", cover)
+                    .withString("playUrl", playUrl)
+                    .withString("authorName", authorName)
+                    .withString("authorIcon", authorIcon)
+                    .withString("authorDescription", authorDescription)
+                    .withInt("likeCount", likeCount)
+                    .navigation()
+            }
+        } catch (e: Exception) {
+            Log.e("ZXY", "跳转失败", e)
+            Toast.makeText(this, "跳转失败: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+    private fun getCurrentVideoPosition(): Int {
+        return currentClickedPosition
+    }
+    private fun observeViewModel() {
+        // 观察数据变化
+        viewModel.dataList.observe(this) { dataList ->
+            dataList?.let {
+                adapter.updateData(it)
             }
         }
 
         // 观察加载状态
-        viewModel.loading.observe(this) { isLoading ->
-            // 这里可以显示/隐藏加载进度条
+        viewModel.isLoading.observe(this) { isLoading ->
             if (isLoading) {
-                // 显示加载状态
                 progressBar.visibility = View.VISIBLE
             } else {
-                // 隐藏加载状态
                 progressBar.visibility = View.GONE
             }
         }
@@ -130,12 +173,12 @@ class ThemeActivity : BaseActivity() {
     }
 
     private fun shareTheme() {
-        // 获取当前主题信息
-        val currentData = viewModel.themeDetailList.value
-        val titleItem = currentData?.firstOrNull { it is TitleItem } as? TitleItem
+        // 获取当前数据
+        val currentData = viewModel.dataList.value
 
-        if (titleItem != null) {
-            val shareText = "分享主题: ${titleItem.title}\n${titleItem.subTitle}\n${titleItem.shareLink}"
+        if (!currentData.isNullOrEmpty()) {
+            val firstItem = currentData[0]
+            val shareText = "分享主题: ${firstItem.brief}\n${firstItem.text}\n${firstItem.shareLink ?: ""}"
 
             // 创建分享Intent
             val shareIntent = android.content.Intent().apply {

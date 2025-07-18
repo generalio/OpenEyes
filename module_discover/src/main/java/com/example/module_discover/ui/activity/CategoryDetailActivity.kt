@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.alibaba.android.arouter.launcher.ARouter
 import com.bumptech.glide.Glide
 import com.example.module_discover.R
 import com.example.module_discover.ui.adapter.CategoryDisplayAdapter
@@ -20,6 +21,8 @@ import com.generals.lib.base.BaseActivity
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.example.module_discover.model.bean.CategoryDetailItem
+
 
 class CategoryDetailActivity : BaseActivity() {
     private lateinit var imageView: ImageView
@@ -87,6 +90,7 @@ class CategoryDetailActivity : BaseActivity() {
             onItemClick = { item ->
                 Log.d(TAG, "点击视频: ${item.data.title}")
                 Toast.makeText(this, "播放视频: ${item.data.title}", Toast.LENGTH_SHORT).show()
+                playVideo(item)
             },
             onShareClick = { item ->
                 Log.d(TAG, "分享: ${item.data.title}")
@@ -99,6 +103,49 @@ class CategoryDetailActivity : BaseActivity() {
 
         Log.d(TAG, "setupRecyclerView: RecyclerView设置完成")
     }
+
+    private fun playVideo(item: CategoryDetailItem) {
+        try {
+            val id = item.data?.content?.data?.id ?: 0
+            val title = item.data?.content?.data?.title ?: ""
+            val authorName = item.data?.content?.data?.author?.name ?: ""
+            val authorIcon = item.data?.content?.data?.author?.icon ?: ""
+            val authorDescription = item.data?.content?.data?.author?.description ?: ""
+            val subTitle = (item.data?.content?.data?.author?.name ?: "") + " / #" + (item.data?.content?.data?.category ?: "")
+            val description = item.data?.content?.data?.description ?: ""
+            val collectionCount = item.data?.content?.data?.consumption?.collectionCount ?: 0
+            val shareCount = item.data?.content?.data?.consumption?.shareCount ?: 0
+            val replyCount = item.data?.content?.data?.consumption?.replyCount ?: 0
+            val background = item.data?.content?.data?.cover?.blurred ?: ""
+            val cover = item.data?.content?.data?.cover?.detail ?: ""
+            val playUrl = item.data?.content?.data?.playUrl ?: ""
+            val likeCount = item.data?.content?.data?.consumption?.collectionCount ?: 0
+
+            Log.d("ZXY", subTitle)
+
+            ARouter.getInstance().build("/video/VideoActivity")
+                .withInt("id", id)
+                .withString("title", title)
+                .withString("subTitle", subTitle)
+                .withString("description", description)
+                .withInt("collectionCount", collectionCount)
+                .withInt("shareCount", shareCount)
+                .withInt("replyCount", replyCount)
+                .withString("background", background)
+                .withString("cover", cover)
+                .withString("playUrl", playUrl)
+                .withString("authorName", authorName)
+                .withString("authorIcon", authorIcon)
+                .withString("authorDescription", authorDescription)
+                .withInt("likeCount", likeCount)
+                .navigation()
+
+        } catch (e: Exception) {
+            Log.e("ZXY", "跳转失败", e)
+        }
+
+    }
+
 
     private fun setupObservers() {
         Log.d(TAG, "setupObservers: 开始设置观察者")
