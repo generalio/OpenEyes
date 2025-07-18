@@ -21,4 +21,8 @@ object Util {
         return resultBuilder.toString()
     }
 
+    fun convertImgUrl(url: String): String {
+        return url.replaceFirst("img.kaiyanapp.com", "ali-img.kaiyanapp.com")
+    }
+
 }

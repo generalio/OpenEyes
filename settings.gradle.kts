@@ -29,3 +29,4 @@ include(":module_home")
 
 include(":module_discover")
 include(":module_video")
+include(":module_square")

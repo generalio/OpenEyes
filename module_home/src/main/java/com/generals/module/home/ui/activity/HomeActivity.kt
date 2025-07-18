@@ -10,6 +10,7 @@ import com.generals.lib.base.BaseActivity
 import com.generals.module.home.R
 import com.generals.module.home.ui.adapter.VP2Adapter
 import com.generals.module.home.ui.fragment.HomeFragment
+import com.generals.module.square.ui.fragment.SquareFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @Route(path = "/home/HomeActivity")
@@ -35,10 +36,11 @@ class HomeActivity : BaseActivity() {
     private fun initEvent() {
         val fragmentList = listOf(
             { HomeFragment() },
-            { HomeFragment() },
+            { SquareFragment() },
             { DiscoverFragment() }
         )
         viewPager2.adapter = VP2Adapter(this, fragmentList)
+//        viewPager2.isUserInputEnabled = false
         bottomNavigation.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bottom_home -> {
@@ -46,7 +48,7 @@ class HomeActivity : BaseActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_square -> {
-
+                    viewPager2.setCurrentItem(1, false)
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_found -> {

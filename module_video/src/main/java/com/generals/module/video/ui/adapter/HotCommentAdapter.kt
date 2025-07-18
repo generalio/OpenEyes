@@ -51,6 +51,7 @@ class HotCommentAdapter : ListAdapter<Comment, HotCommentAdapter.HotCommentViewH
         if(comment.data.user != null) {
             Glide.with(holder.mIvAvatar.context)
                 .load(comment.data.user.avatar)
+                .error(R.drawable.ic_avatar)
                 .circleCrop()
                 .into(holder.mIvAvatar)
             holder.mTvUsername.text = comment.data.user.nickname

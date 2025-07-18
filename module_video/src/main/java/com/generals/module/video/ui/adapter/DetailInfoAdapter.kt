@@ -79,6 +79,7 @@ class DetailInfoAdapter(private val videoInfo: VideoInfo, private val itemClickL
         holder.mTvAuthorDescription.text = videoInfo.authorDescription
         Glide.with(holder.mIvAvatar.context)
             .load(videoInfo.authorIcon)
+            .error(R.drawable.ic_avatar)
             .circleCrop()
             .into(holder.mIvAvatar)
     }

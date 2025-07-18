@@ -54,6 +54,7 @@ class NewCommentAdapter : PagingDataAdapter<Comment, NewCommentAdapter.NewCommen
             holder.mTvUsername.text = user.nickname
             Glide.with(holder.mIvAvatar.context)
                 .load(user.avatar)
+                .error(R.drawable.ic_avatar)
                 .circleCrop()
                 .into(holder.mIvAvatar)
         } else {

@@ -35,6 +35,12 @@
             tools:ignore="DiscouragedApi">
 
         </activity>
+
+        <activity
+            android:name="com.generals.module.square.ui.activity.SquareDetailActivity">
+
+
+        </activity>
         
     </application>
 

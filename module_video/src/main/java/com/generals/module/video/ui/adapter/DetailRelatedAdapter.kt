@@ -55,8 +55,10 @@ class DetailRelatedAdapter(private val itemClickListener: OnItemClickListener) :
             holder.itemView.animate().alpha(1F).setDuration(600).start()
             val author = videoInfo.data.author
             if(author != null) {
+                holder.mTvAuthorName.text = videoInfo.data.author.name
                 Glide.with(holder.mIvAvatar.context)
                     .load(videoInfo.data.author.icon)
+                    .error(R.drawable.ic_avatar)
                     .circleCrop()
                     .into(holder.mIvAvatar)
             } else {
@@ -64,15 +66,12 @@ class DetailRelatedAdapter(private val itemClickListener: OnItemClickListener) :
                     .load(R.drawable.ic_avatar)
                     .circleCrop()
                     .into(holder.mIvAvatar)
-            }
-            if(author.name != null) {
-                holder.mTvAuthorName.text = videoInfo.data.author.name
-            } else {
                 holder.mTvAuthorName.text = "匿名用户"
             }
             holder.mTvTitle.text = videoInfo.data.title
             Glide.with(holder.mIvCover.context)
-                .load(videoInfo.data.cover.feed)
+                .load(videoInfo.data.cover.detail)
+                .error(R.drawable.ic_failed)
                 .into(holder.mIvCover)
             holder.mTvTime.text = Util.transferTime(videoInfo.data.duration)
         }

@@ -94,6 +94,7 @@ class DailyAdapter(val itemClickListener: OnItemClickListener) : PagingDataAdapt
                     holder.mTvDesc.text = daily.data.content.data.author.name + " / #" + daily.data.content.data.category
                     Glide.with(holder.mIvAvatar.context)
                         .load(daily.data.content.data.author.icon)
+                        .error(R.drawable.ic_avatar)
                         .circleCrop()
                         .into(holder.mIvAvatar)
                     Glide.with(holder.mIvCover.context)
