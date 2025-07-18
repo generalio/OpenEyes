@@ -13,6 +13,6 @@ object SquareRepository {
     val squareService = ServiceCreator.create<SquareService>()
 
     fun getSquareBannerInfo() = squareService.getSquareBannerInfo()
-    fun getSquareInfo(startScore: Int, pageCount: Int) = squareService.getSquareInfo(startScore, pageCount)
+    fun getSquareInfo(startScore: String, pageCount: Int) = squareService.getSquareInfo(startScore, pageCount)
 
 }

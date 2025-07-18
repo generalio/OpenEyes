@@ -41,7 +41,7 @@ class SquareViewModel : ViewModel() {
         compositeDisposable.add(disposable)
     }
 
-    fun getSquareInfo(startScore: Int, pageCount: Int) {
+    fun getSquareInfo(startScore: String, pageCount: Int) {
         val disposable = SquareRepository.getSquareInfo(startScore, pageCount)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

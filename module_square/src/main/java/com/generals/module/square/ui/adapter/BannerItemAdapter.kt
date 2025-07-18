@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.generals.module.square.R
 import com.generals.module.square.model.bean.ItemDetail
@@ -62,9 +63,6 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
                     }
                 }
 
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                }
             })
             val rv = mVP2Banner.getChildAt(0) as RecyclerView
             rv.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
@@ -104,9 +102,12 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
         val adapter = BannerContentAdapter(bannerList)
         holder.mVP2Banner.adapter = adapter
         holder.mVP2Banner.setPageTransformer(BannerTransformer())
-        holder.mVP2Banner.setCurrentItem(bannerList.size / 2, false)
+        holder.mVP2Banner.setCurrentItem(1, false)
         holder.mVP2Banner.offscreenPageLimit = 3
-
+        val layoutParams = holder.itemView.layoutParams
+        if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+            layoutParams.isFullSpan = true
+        }
     }
 
     override fun getItemCount(): Int {
