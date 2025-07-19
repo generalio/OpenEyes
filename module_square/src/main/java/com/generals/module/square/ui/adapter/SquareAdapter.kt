@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
 import com.generals.module.square.R
 import com.generals.module.square.model.bean.Square
 
@@ -43,8 +45,10 @@ class SquareAdapter : ListAdapter<Square, SquareAdapter.ViewHolder>(object : Dif
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val square = getItem(position)
         Glide.with(holder.mIvCover.context)
-            .load(square.data.content.data.url)
+            .load(square.data.content.data.url.replace("http", "https"))
             .error(R.drawable.ic_failed)
+            .apply(RequestOptions().centerCrop())
+            .transition(DrawableTransitionOptions.withCrossFade())
             .into(holder.mIvCover)
         holder.mIvPicList.isVisible = (square.data.content.data.urls.size > 1)
         holder.mTvTitle.text = square.data.content.data.description

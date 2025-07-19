@@ -1,13 +1,18 @@
 package com.generals.module.square.ui.fragment
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
@@ -31,9 +36,13 @@ class SquareFragment : Fragment() {
     private lateinit var recyclerview: RecyclerView
     private lateinit var bannerAdapter: BannerItemAdapter
     private lateinit var squareAdapter: SquareAdapter
+    private lateinit var loading: ImageView
+
+    private var rotateAnimator: ObjectAnimator? = null
 
     private var startScore = "0"
     private val squareList: MutableList<Square> = mutableListOf()
+    private var isLoading = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +58,7 @@ class SquareFragment : Fragment() {
         baseActivity = activity as BaseActivity
 
         recyclerview = view.findViewById(R.id.rv_square)
+        loading = view.findViewById(R.id.iv_loading)
         val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         recyclerview.layoutManager = layoutManager
 
@@ -57,6 +67,23 @@ class SquareFragment : Fragment() {
         recyclerview.adapter = ConcatAdapter(bannerAdapter, squareAdapter)
         checkNetWork()
         listenLiveData()
+        recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                // 如果不能继续向下滑（已经滑倒底部）
+                if(!isLoading && !recyclerView.canScrollVertically(1)) {
+                    loadMoreData()
+                }
+            }
+        })
+        loading.setOnClickListener {
+            startAnimate()
+        }
+    }
+
+    private fun loadMoreData() {
+        isLoading = true
+        startAnimate()
     }
 
     private fun checkNetWork() {
@@ -64,6 +91,11 @@ class SquareFragment : Fragment() {
             loadData()
         } else {
             showToast("网络链接失败，请重试!")
+            loading.animate().translationY(-loading.height.toFloat())
+                .setInterpolator(DecelerateInterpolator())
+            recyclerview.animate().translationY(-loading.height.toFloat()).setInterpolator(
+                DecelerateInterpolator()
+            )
         }
     }
 
@@ -100,6 +132,7 @@ class SquareFragment : Fragment() {
                     }
                 }
             }
+            isLoading = false
             squareAdapter.submitList(squareList.toList())
         }
     }
@@ -107,5 +140,56 @@ class SquareFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         bannerAdapter.release()
+        rotateAnimator?.cancel()
+        rotateAnimator = null
     }
+
+    fun startAnimate() {
+        // 回弹到一定高度进行旋转
+        loading.animate().translationY(-loading.height.toFloat())
+            .setInterpolator(DecelerateInterpolator())
+        recyclerview.animate().translationY(-loading.height.toFloat()).setInterpolator(
+            DecelerateInterpolator()
+        )
+        if (rotateAnimator?.isRunning == true) return //防止重复创建
+        rotateAnimator =
+            ObjectAnimator.ofFloat(loading, "rotation", loading.rotation, loading.rotation - 360F)
+                .apply {
+                    duration = 1000
+                    repeatCount = 0
+                    interpolator = LinearInterpolator()
+                    addListener(object : AnimatorListener {
+                        override fun onAnimationStart(p0: Animator) {
+                            // 开始刷新
+                            loading.isClickable = false
+                            if(baseActivity.isNetworkAvailable()) {
+                                squareViewModel.getSquareInfo(startScore, 2)
+                            } else {
+                                showToast("网络链接失败，请重试!")
+                                isLoading = false
+                            }
+                        }
+
+                        override fun onAnimationEnd(p0: Animator) {
+                            // 结束刷新
+                            loading.isClickable = true
+                            if(baseActivity.isNetworkAvailable()) {
+                                stopAnimate()
+                            }
+                        }
+
+                        override fun onAnimationCancel(p0: Animator) {}
+
+                        override fun onAnimationRepeat(p0: Animator) {}
+
+                    })
+                    start()
+                }
+    }
+
+    fun stopAnimate() {
+        loading.animate().translationY(0F).setInterpolator(DecelerateInterpolator())
+        recyclerview.animate().translationY(0F).setInterpolator(DecelerateInterpolator())
+    }
+
 }
