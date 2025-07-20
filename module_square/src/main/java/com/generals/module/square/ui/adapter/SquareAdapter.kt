@@ -1,6 +1,7 @@
 package com.generals.module.square.ui.adapter
 
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.generals.module.square.R
@@ -22,7 +24,7 @@ import com.generals.module.square.model.bean.Square
  * @Date : 2025/7/18 20:47
  */
 
-class SquareAdapter : ListAdapter<Square, SquareAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Square>() {
+class SquareAdapter(private val itemClickListener: OnItemClickListener) : ListAdapter<Square, SquareAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Square>() {
     override fun areContentsTheSame(oldItem: Square, newItem: Square): Boolean {
         return oldItem == newItem
     }
@@ -33,12 +35,22 @@ class SquareAdapter : ListAdapter<Square, SquareAdapter.ViewHolder>(object : Dif
 
 }) {
 
+    interface OnItemClickListener {
+        fun onImageClick(position: Int, view: ImageView)
+    }
+
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mIvCover: ImageView = view.findViewById(R.id.iv_square_cover)
         val mIvPicList: ImageView = view.findViewById(R.id.iv_square_pic_list)
         val mTvTitle: TextView = view.findViewById(R.id.tv_square_title)
         val mTvAuthorName: TextView = view.findViewById(R.id.tv_square_author_name)
         val mIvAvatar: ImageView = view.findViewById(R.id.iv_square_avatar)
+
+        init {
+            mIvCover.setOnClickListener {
+                itemClickListener.onImageClick(bindingAdapterPosition, mIvCover)
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")

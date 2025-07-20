@@ -1,5 +1,9 @@
 package com.generals.lib.base
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 /**
  * @Desc : 一些工具类
  * @Author : zzx
@@ -23,6 +27,11 @@ object Util {
 
     fun convertImgUrl(url: String): String {
         return url.replaceFirst("img.kaiyanapp.com", "ali-img.kaiyanapp.com")
+    }
+
+    fun transformDate(date: Long) : String {
+        val sdf = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
+        return sdf.format(Date(date))
     }
 
 }

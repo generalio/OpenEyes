@@ -38,7 +38,7 @@ import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 
 @Route(path = "/video/VideoActivity")
-class VideoActivity : BaseActivity() {
+class   VideoActivity : BaseActivity() {
 
     @Autowired
     @JvmField
@@ -223,17 +223,16 @@ class VideoActivity : BaseActivity() {
                 }
             }
         }
+    }
 
-        // 配置生命周期
-        onBackPressedDispatcher.addCallback(this) {
-            if(orientationUtils != null) {
-                orientationUtils.backToProtVideo()
-            }
-            if(GSYVideoManager.backFromWindowFull(this@VideoActivity)) {
-                return@addCallback
-            }
-            finish()
+    override fun onBackPressed() {
+        if(orientationUtils != null) {
+            orientationUtils.backToProtVideo()
         }
+        if(GSYVideoManager.backFromWindowFull(this)) {
+            return
+        }
+        super.onBackPressed()
     }
 
     override fun onPause() {
