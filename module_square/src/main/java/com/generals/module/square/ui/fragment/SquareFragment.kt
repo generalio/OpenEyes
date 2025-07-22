@@ -100,7 +100,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
                 val data: Intent? = result.data
                 val value = data?.getIntExtra("position", 0)
                 if (value != null) {
-                    recyclerview.scrollToPosition(value + 1)
+                    recyclerview.scrollToPosition(value + 1 )
                 }
             }
         }
@@ -171,6 +171,8 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
         bannerAdapter.release()
         rotateAnimator?.cancel()
         rotateAnimator = null
+
+        launcher.unregister() // 取消回调
     }
 
     // 弹出加载动画

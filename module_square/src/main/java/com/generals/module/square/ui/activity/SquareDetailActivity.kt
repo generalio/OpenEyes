@@ -1,26 +1,21 @@
 package com.generals.module.square.ui.activity
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.transition.ChangeBounds
-import android.transition.ChangeClipBounds
-import android.transition.ChangeImageTransform
 import android.transition.Fade
-import android.transition.Slide
-import android.transition.TransitionSet
-import android.view.View
 import android.view.Window
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
 import com.generals.lib.base.BaseActivity
 import com.generals.module.square.R
 import com.generals.module.square.model.bean.Photo
 import com.generals.module.square.ui.adapter.SquareDetailAdapter
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class SquareDetailActivity : BaseActivity() {
 
@@ -30,7 +25,6 @@ class SquareDetailActivity : BaseActivity() {
     private lateinit var mIvBack: ImageView
     private lateinit var vp2: ViewPager2
 
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         window.requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS)
         window.sharedElementEnterTransition = Fade()

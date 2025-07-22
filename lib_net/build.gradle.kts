@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.generals.lib.net"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 30

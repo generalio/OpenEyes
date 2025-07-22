@@ -169,6 +169,7 @@ class   VideoActivity : BaseActivity() {
      * 视频的一些初始化
      * 视频播放时会小概率出现内存泄漏（不知道触发流程）
      * 猜测是视频播放器内部会对网络是否链接进行检测，调用ConnectiveManager，持有activity引用
+     * 因每次内存泄漏的很少很少（600kb）,故懒得换播放器了
      */
     private fun initVideo() {
         orientationUtils = OrientationUtils(this, videoPlayer) // 外部辅助的旋转，帮助全屏

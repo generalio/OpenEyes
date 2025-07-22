@@ -1,5 +1,6 @@
 package com.generals.module.square.ui.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,8 +8,9 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.generals.module.square.R
-import com.generals.module.square.ui.activity.SquareDetailActivity
 
 /**
  * @Desc : 类的描述
@@ -16,7 +18,11 @@ import com.generals.module.square.ui.activity.SquareDetailActivity
  * @Date : 2025/7/20 20:53
  */
 
-class PhotoAdapter(private val photoList: List<String>) : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
+class PhotoAdapter(private val photoList: List<String>, private val getHeight : GetDetail) : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
+
+    interface GetDetail {
+        fun getHeight(fl: Float)
+    }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mIvPhoto: ImageView = view.findViewById(R.id.iv_photo)
@@ -36,7 +42,18 @@ class PhotoAdapter(private val photoList: List<String>) : RecyclerView.Adapter<P
             .load(photoList[position])
             .error(R.drawable.ic_failed)
             .apply(RequestOptions().fitCenter())
-            .into(holder.mIvPhoto)
+            .into(object : CustomTarget<Drawable>() {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    transition: Transition<in Drawable>?
+                ) {
+                    holder.mIvPhoto.setImageDrawable(resource)
+                    getHeight.getHeight(holder.mIvPhoto.height.toFloat())
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {}
+
+            })
     }
 
     override fun getItemCount(): Int {
