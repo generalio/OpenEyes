@@ -45,17 +45,7 @@ class SquareDetailActivity : BaseActivity() {
         vp2.setCurrentItem(position, false)
 
         mIvBack.setOnClickListener {
-            val intent = Intent()
-            intent.putExtra("position", vp2.currentItem)
-            setResult(Activity.RESULT_OK, intent)
-            ActivityCompat.finishAfterTransition(this)
-        }
-
-        onBackPressedDispatcher.addCallback() {
-            val intent = Intent()
-            intent.putExtra("position", vp2.currentItem)
-            setResult(Activity.RESULT_OK, intent)
-            ActivityCompat.finishAfterTransition(this@SquareDetailActivity)
+            finish()
         }
 
     }

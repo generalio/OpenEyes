@@ -13,8 +13,6 @@ import com.bumptech.glide.Glide
 import com.generals.lib.base.Util
 import com.generals.module.square.R
 import com.generals.module.square.model.bean.Photo
-import com.generals.module.square.ui.activity.SquareDetailActivity
-
 /**
  * @Desc : 详情的Adapter
  * @Author : zzx
@@ -29,7 +27,6 @@ class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Ada
         val photoViewPager2: ViewPager2 = view.findViewById(R.id.vp2_square_photo)
         val mTvCount: TextView = view.findViewById(R.id.tv_count_photo)
         val mTvDetail: TextView = view.findViewById(R.id.tv_detail)
-        val layoutPhoto: View = view.findViewById(R.id.layout_photo)
         val layoutDetail: View = view.findViewById(R.id.layout_detail)
         val mIvAvatar: ImageView = view.findViewById(R.id.iv_detail_avatar)
         val mTvAuthorName: TextView = view.findViewById(R.id.tv_detail_author_name)
@@ -48,6 +45,7 @@ class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Ada
                 mTvCount.text = "${position + 1}/${photoList[bindingAdapterPosition].urls.size}"
                 val height = layoutDetail.height.toFloat()
                 val detailY = layoutDetail.bottom.toFloat()
+                // 每张图片大小不同，故需要单独处理一下
                 if((photoViewPager2.bottom - height) < detailY && layoutDetail.translationY == 0F) {
                     photoViewPager2.pivotY = 0f
                     val scale = (photoViewPager2.bottom - height) / detailY
@@ -68,6 +66,7 @@ class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Ada
                     layoutDetail.translationY = height
                 }
                 layoutDetail.animate().translationY(0F)
+                // 如果被挡住了则对上面的图片进行缩放
                 if((photoViewPager2.bottom - height) < detailY) {
                     photoViewPager2.pivotY = 0f
                     val scale = (photoViewPager2.bottom - height) / detailY
@@ -104,6 +103,7 @@ class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Ada
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
+        // 初始化一下详情的y
         holder.layoutDetail.post {
             holder.layoutDetail.translationY = holder.layoutDetail.height.toFloat()
         }

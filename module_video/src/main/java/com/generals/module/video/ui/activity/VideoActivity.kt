@@ -40,6 +40,8 @@ import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 @Route(path = "/video/VideoActivity")
 class   VideoActivity : BaseActivity() {
 
+    // 这里是video跳转过来时一些必要的参数
+
     @Autowired
     @JvmField
     var id: Int = 0

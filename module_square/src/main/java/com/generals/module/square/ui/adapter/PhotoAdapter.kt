@@ -26,10 +26,6 @@ class PhotoAdapter(private val photoList: List<String>, private val getHeight : 
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mIvPhoto: ImageView = view.findViewById(R.id.iv_photo)
-
-        init {
-            mIvPhoto.transitionName = "transition"
-        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -41,7 +37,6 @@ class PhotoAdapter(private val photoList: List<String>, private val getHeight : 
         Glide.with(holder.mIvPhoto.context)
             .load(photoList[position])
             .error(R.drawable.ic_failed)
-            .apply(RequestOptions().fitCenter())
             .into(object : CustomTarget<Drawable>() {
                 override fun onResourceReady(
                     resource: Drawable,

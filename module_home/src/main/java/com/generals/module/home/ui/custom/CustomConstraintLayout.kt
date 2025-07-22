@@ -32,9 +32,9 @@ class CustomConstraintLayout(context: Context, attributeSet: AttributeSet?) : Co
                 val dx = ev.x - initialX
                 val child = getChildAt(1) as ViewPager2
                 val canScroll = if (dx > 0) {
-                    child.canScrollHorizontally(-1) // 右滑，是否还能再向左滑,如果还能左滑那么就为true,不允许父布局再滑
+                    child.canScrollHorizontally(-1) // 右滑，是否还能再向右滑,如果还能左滑那么就为true,不允许父布局再滑
                 } else {
-                    child.canScrollHorizontally(1)  // 左滑，是否还能再向右滑， 同理
+                    child.canScrollHorizontally(1)  // 左滑，是否还能再向左滑， 同理
                 }
                 // 只有不能再滑时，才不禁止父布局进行拦截
                 parent.requestDisallowInterceptTouchEvent(canScroll)

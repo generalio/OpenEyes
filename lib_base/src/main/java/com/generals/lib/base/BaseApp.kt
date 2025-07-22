@@ -1,12 +1,7 @@
 package com.generals.lib.base
 
-import android.annotation.SuppressLint
 import android.app.Application
-import android.content.Context
-import android.util.Log
 import com.alibaba.android.arouter.launcher.ARouter
-import com.github.anrwatchdog.ANRWatchDog
-
 /**
  * @Desc : BaseApp
  * @Author : zzx
@@ -19,9 +14,6 @@ class BaseApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
-        val anrWatchDog = ANRWatchDog()
-        anrWatchDog.start()
 
         if(isDebug) {
             ARouter.openLog()

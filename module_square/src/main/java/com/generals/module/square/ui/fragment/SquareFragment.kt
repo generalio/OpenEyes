@@ -56,8 +56,6 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
     private var isLoading = false
     private var isLoad = false
 
-    private lateinit var launcher: ActivityResultLauncher<Intent>
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -92,17 +90,6 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
         })
         loading.setOnClickListener {
             startAnimate()
-        }
-
-        // 注册回调
-        launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                val value = data?.getIntExtra("position", 0)
-                if (value != null) {
-                    recyclerview.scrollToPosition(value + 1 )
-                }
-            }
         }
     }
 
@@ -171,8 +158,6 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
         bannerAdapter.release()
         rotateAnimator?.cancel()
         rotateAnimator = null
-
-        launcher.unregister() // 取消回调
     }
 
     // 弹出加载动画
@@ -227,7 +212,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
 
     // 点击图片进行跳转
     override fun onImageClick(position: Int, view: ImageView) {
-        val option = ActivityOptionsCompat.makeSceneTransitionAnimation(baseActivity)
+        val option = ActivityOptions.makeSceneTransitionAnimation(baseActivity)
         val intent = Intent(baseActivity, SquareDetailActivity::class.java)
         val photoList: ArrayList<Photo> = ArrayList()
         for(square in squareList) {
@@ -236,7 +221,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
         }
         intent.putExtra("position", position)
         intent.putParcelableArrayListExtra("photoList", ArrayList(photoList))
-        launcher.launch(intent, option)
+        startActivity(intent, option.toBundle())
     }
 
 }

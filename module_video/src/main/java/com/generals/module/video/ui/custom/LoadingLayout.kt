@@ -145,6 +145,7 @@ class LoadingLayout(context: Context, attributeSet: AttributeSet?) : FrameLayout
         loading.rotation = -transitionY / maxSlopHeight * 360F
     }
 
+    // 释放动画占用的内存，防止内存泄漏
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         rotateAnimator?.cancel()

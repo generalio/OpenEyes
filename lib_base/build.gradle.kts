@@ -48,7 +48,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.anrwatchdog)
     implementation(libs.arouter.api)
     kapt(libs.arouter.compiler)
 

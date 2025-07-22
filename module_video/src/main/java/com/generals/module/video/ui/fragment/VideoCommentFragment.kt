@@ -116,6 +116,7 @@ class VideoCommentFragment : Fragment() {
                 }
             }
         }
+        // 监听paging3的加载状态
         adapter.addLoadStateListener { loadState ->
             if(loadState.refresh is LoadState.NotLoading && adapter.itemCount > 0) {
                 if(!isFirst) {
