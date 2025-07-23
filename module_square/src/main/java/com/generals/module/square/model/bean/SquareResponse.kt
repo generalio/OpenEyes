@@ -1,5 +1,12 @@
 package com.generals.module.square.model.bean
 
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.versionedparcelable.ParcelField
+import androidx.versionedparcelable.VersionedParcelize
+import kotlinx.parcelize.Parcelize
+import java.io.Serializable
+
 /**
  * @Desc : 广场的数据类
  * @Author : zzx
@@ -20,7 +27,6 @@ data class Square(
     val id: Int,
     val type: String
 )
-
 data class Data(
     val content: Content,
     val count: Int,
@@ -78,12 +84,9 @@ data class DataX(
     val playUrl: String,
     val playUrlWatermark: String,
     val reallyCollected: Boolean,
-    val recentOnceReply: RecentOnceReply,
     val releaseTime: Long,
     val resourceType: String,
     val source: String,
-    val status: Any,
-    val tags: List<Tag>,
     val title: String,
     val type: String,
     val uid: Int,
@@ -132,27 +135,6 @@ data class Owner(
     val userType: String
 )
 
-data class RecentOnceReply(
-    val actionUrl: String,
-    val dataType: String,
-    val message: String,
-    val nickname: String
-)
-
-data class Tag(
-    val actionUrl: String,
-    val bgPicture: String,
-    val communityIndex: Int,
-    val desc: String,
-    val haveReward: Boolean,
-    val headerImage: String,
-    val id: Int,
-    val ifNewest: Boolean,
-    val name: String,
-    val newestEndTime: Long,
-    val tagRecType: String
-)
-
 data class DataXX(
     val actionUrl: String,
     val autoPlay: Boolean,
@@ -161,18 +143,19 @@ data class DataXX(
     val description: String,
     val id: Int,
     val image: String,
-    val label: Label,
-    val labelList: List<LabelX>,
     val shade: Boolean,
     val subTitle: String,
     val title: String
 )
 
-data class Label(
-    val card: String,
-    val text: String
-)
-
-data class LabelX(
-    val text: String
-)
+@Parcelize
+data class Photo(
+    val id: Int,
+    val description: String,
+    val collectionCount: Int,
+    val nickname: String,
+    val avatar: String,
+    val createTime: Long,
+    val updateTime: Long,
+    val urls: List<String>
+) : Parcelable

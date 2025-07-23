@@ -19,6 +19,7 @@ import com.generals.module.video.model.bean.VideoInfo
 
 class DetailInfoAdapter(private val videoInfo: VideoInfo, private val itemClickListener: OnItemClickListener) : RecyclerView.Adapter<DetailInfoAdapter.ViewHolder>() {
 
+    // 一些点击接口
     interface OnItemClickListener {
         fun onZanClick()
         fun onCollectClick()

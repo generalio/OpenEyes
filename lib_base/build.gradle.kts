@@ -12,7 +12,7 @@ kapt {
 
 android {
     namespace = "com.generals.lib.base"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 30
@@ -48,7 +48,6 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.anrwatchdog)
     implementation(libs.arouter.api)
     kapt(libs.arouter.compiler)
 

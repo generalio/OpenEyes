@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.generals.module.square.R
 import com.generals.module.square.model.bean.ItemDetail
@@ -51,21 +52,19 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
                     } else {
                         if(state == ViewPager2.SCROLL_STATE_IDLE) {
                             if(mVP2Banner.currentItem == bannerList.size - 1) {
-                                mVP2Banner.setCurrentItem(1, false)
+                                mVP2Banner.setCurrentItem(1, false) // 这个是不带动画的跳转
                             }
                             if(mVP2Banner.currentItem == 0) {
                                 mVP2Banner.setCurrentItem(bannerList.size - 2, false)
                             }
-                            handler.removeCallbacks(runnable)
+                            handler.removeCallbacks(runnable) // 把之前的任务移除
                             handler.postDelayed(runnable, 3000)
                         }
                     }
                 }
 
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                }
             })
+            // 粗暴解决banner和外部vp2的滑动冲突，因为包一层不好拿到这个实例
             val rv = mVP2Banner.getChildAt(0) as RecyclerView
             rv.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
                 var initialX = 0F
@@ -104,15 +103,21 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
         val adapter = BannerContentAdapter(bannerList)
         holder.mVP2Banner.adapter = adapter
         holder.mVP2Banner.setPageTransformer(BannerTransformer())
-        holder.mVP2Banner.setCurrentItem(bannerList.size / 2, false)
+        holder.mVP2Banner.setCurrentItem(1, false)
+        // 设置成左中右的形式
         holder.mVP2Banner.offscreenPageLimit = 3
-
+        val layoutParams = holder.itemView.layoutParams
+        // 把轮播图，也就是RV的第一项变成占满整行，其余用瀑布流
+        if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+            layoutParams.isFullSpan = true
+        }
     }
 
     override fun getItemCount(): Int {
         return 1
     }
 
+    // 向外部fragment提供一个方法清除handler
     fun release() {
         handler.removeCallbacksAndMessages(null)
     }

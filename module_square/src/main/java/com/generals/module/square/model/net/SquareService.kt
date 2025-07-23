@@ -14,7 +14,7 @@ import retrofit2.http.Query
 interface SquareService {
 
     @GET("v7/community/tab/rec")
-    fun getSquareInfo(@Query("startScore") startScore: Int, @Query("pageCount") pageCount: Int) : Observable<SquareResponse>
+    fun getSquareInfo(@Query("startScore") startScore: String, @Query("pageCount") pageCount: Int) : Observable<SquareResponse>
 
     @GET("v7/community/tab/rec")
     fun getSquareBannerInfo() : Observable<SquareResponse>
