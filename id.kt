@@ -1,0 +1,14 @@
+val id = item.data.id
+            val title = item.data.title 
+            val authorName = item.data.author.name 
+            val authorIcon = item.data.author.icon 
+            val authorDescription = item.data.author.description 
+            val subTitle = (item.data.author.name ) + " / #" + (item.data.category )
+            val description = item.data.description 
+            val collectionCount = item.data.consumption.collectionCount 
+            val shareCount = item.data.consumption.shareCount 
+            val replyCount = item.data.consumption.replyCount 
+            val background = item.data.cover.blurred 
+            val cover = item.data.cover.detail 
+            val playUrl = item.data.playUrl 
+            val likeCount = item.data.consumption.collectionCount 
