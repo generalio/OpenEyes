@@ -89,7 +89,7 @@ class CategoryDetailActivity : BaseActivity() {
         adapter = CategoryDisplayAdapter(
             onItemClick = { item ->
                 Log.d(TAG, "点击视频: ${item.data.title}")
-                Toast.makeText(this, "播放视频: ${item.data.title}", Toast.LENGTH_SHORT).show()
+
                 playVideo(item)
             },
             onShareClick = { item ->
@@ -106,20 +106,20 @@ class CategoryDetailActivity : BaseActivity() {
 
     private fun playVideo(item: CategoryDetailItem) {
         try {
-            val id = item.data?.content?.data?.id ?: 0
-            val title = item.data?.content?.data?.title ?: ""
-            val authorName = item.data?.content?.data?.author?.name ?: ""
-            val authorIcon = item.data?.content?.data?.author?.icon ?: ""
-            val authorDescription = item.data?.content?.data?.author?.description ?: ""
-            val subTitle = (item.data?.content?.data?.author?.name ?: "") + " / #" + (item.data?.content?.data?.category ?: "")
-            val description = item.data?.content?.data?.description ?: ""
-            val collectionCount = item.data?.content?.data?.consumption?.collectionCount ?: 0
-            val shareCount = item.data?.content?.data?.consumption?.shareCount ?: 0
-            val replyCount = item.data?.content?.data?.consumption?.replyCount ?: 0
-            val background = item.data?.content?.data?.cover?.blurred ?: ""
-            val cover = item.data?.content?.data?.cover?.detail ?: ""
-            val playUrl = item.data?.content?.data?.playUrl ?: ""
-            val likeCount = item.data?.content?.data?.consumption?.collectionCount ?: 0
+            val id = item.data.content.data.id
+            val title = item.data.content.data.title
+            val authorName = item.data.content.data.author.name
+            val authorIcon = item.data.content.data.author.icon
+            val authorDescription = item.data.content.data.author.description
+            val subTitle = (item.data.content.data.author.name ) + " / #" + (item.data.content.data.category )
+            val description = item.data.content.data.description
+            val collectionCount = item.data.content.data.consumption.collectionCount
+            val shareCount = item.data.content.data.consumption.shareCount
+            val replyCount = item.data.content.data.consumption.replyCount
+            val background = item.data.content.data.cover.blurred
+            val cover = item.data.content.data.cover.detail
+            val playUrl = item.data.content.data.playUrl
+            val likeCount = item.data.content.data.consumption.collectionCount
 
             Log.d("ZXY", subTitle)
 

@@ -1,14 +1,17 @@
 package com.example.module_discover.ui.fragment
 
+import MainItem
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import android.widget.Button
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -20,6 +23,7 @@ import com.example.module_discover.model.bean.CategoryItem
 import com.example.module_discover.model.bean.ThemeItem
 import com.example.module_discover.ui.activity.CategoryDetailActivity
 import com.example.module_discover.ui.activity.ThemeActivity
+import com.example.module_discover.ui.adapter.NewDiscoverAdapter
 import com.example.module_discover.ui.adapter.OnCategoryItemClickListener
 import com.example.module_discover.ui.adapter.ThemeAdapter
 import com.example.module_discover.ui.adapter.ThemeItemClickListener
@@ -29,8 +33,10 @@ class DiscoverFragment : Fragment() {
     private lateinit var first_recyclerView: RecyclerView
     private lateinit var Second_recyclerView: RecyclerView
     private lateinit var cardView: CardView
+    private lateinit var mainRecyclerView:RecyclerView
     private lateinit var viewModel: DiscoverViewModel
     private lateinit var themeAdapter: ThemeAdapter
+    private lateinit var mainAdapter: NewDiscoverAdapter
 
     private val categoryList = listOf(
         CategoryItem(R.drawable.advertising, "广告", 14),
@@ -64,7 +70,7 @@ class DiscoverFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_discover, container, false)
+        val view = inflater.inflate(R.layout.new_fragment_discover, container, false)
         viewModel = ViewModelProvider(this)[DiscoverViewModel::class.java]
 
         if (view != null) {
@@ -82,67 +88,80 @@ class DiscoverFragment : Fragment() {
     }
 
     private fun initView(view: View) {
-        cardView = view.findViewById(R.id.search_Container)
-        first_recyclerView = view.findViewById(R.id.category_recyclerView)
-        Second_recyclerView = view.findViewById(R.id.theme_playlist_recyclerView)
+        mainRecyclerView = view.findViewById(R.id.new_discover_rv)
 
-        // 初始化 ThemeAdapter
-        themeAdapter = ThemeAdapter(defaultThemeList, object : ThemeItemClickListener {
-            override fun onItemClick(position: Int, item: ThemeItem) {
-                val intent = Intent(requireContext(), ThemeActivity::class.java)
-                intent.putExtra("key_id", item.id)
-                startActivity(intent)
+        // 初始化主 Adapter
+        mainAdapter = NewDiscoverAdapter(
+            list = createInitialSections(),
+            categoryClickListener = object : OnCategoryItemClickListener {
+                override fun onItemClick(position: Int, item: CategoryItem) {
+                    val intent = Intent(requireContext(), CategoryDetailActivity::class.java)
+                    intent.putExtra("key_id", item.id)
+                    intent.putExtra("key_name", item.CategoryName)
+                    startActivity(intent)
+                }
+            },
+            themeClickListener = object : ThemeItemClickListener {
+                override fun onItemClick(position: Int, item: ThemeItem, sharedElement: View) {
+                    val intent = Intent(requireContext(), ThemeActivity::class.java)
+                    intent.putExtra("key_id", item.id)
+                    intent.putExtra("image_url", item.imageUrl)
+
+                    val options = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        requireActivity(),
+                        sharedElement,
+                        "theme_image"
+                    )
+
+                    startActivity(intent, options.toBundle())
+                }
             }
-        })
+        )
 
-        // 设置水平滑动的 LinearLayoutManager
-        val horizontalLayoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        Second_recyclerView.layoutManager = horizontalLayoutManager
-        Second_recyclerView.adapter = themeAdapter
-        Second_recyclerView.setHasFixedSize(true)
-        Second_recyclerView.isNestedScrollingEnabled = false
-
-        // 设置分类网格布局
-        val gridLayoutManager = GridLayoutManager(requireContext(), 3)
-        first_recyclerView.layoutManager = gridLayoutManager
-        first_recyclerView.adapter = CategoryAdapter(categoryList, object : OnCategoryItemClickListener {
-            override fun onItemClick(position: Int, item: CategoryItem) {
-                val message = "点击了 ${item.CategoryName}，ID: ${item.id}"
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-
-                // 跳转到改进后的分类详情页面
-                val intent = Intent(requireContext(), CategoryDetailActivity::class.java)
-                intent.putExtra("key_id", item.id)
-                intent.putExtra("key_name",item.CategoryName)
-                //intent.putExtra("key_description",item.CategoryName+"为生活增加色彩")
-                startActivity(intent)
-            }
-        })
-
-        Log.d("DiscoverFragment", "RecyclerView 初始化完成，数据数量: ${categoryList.size}")
+        // 设置主 RecyclerView
+        mainRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        mainRecyclerView.adapter = mainAdapter
+        mainRecyclerView.setHasFixedSize(true)
     }
-
+    private fun createInitialSections(): List<MainItem> {
+        return listOf(
+            MainItem(
+                title = "热门分类",
+                categoryList = categoryList,
+                themeList = null,
+                sectionType = SectionType.CATEGORY
+            ),
+            MainItem(
+                title = "推荐主题",
+                categoryList = null,
+                themeList = defaultThemeList,
+                sectionType = SectionType.THEME
+            )
+        )
+    }
 
 
     private fun setupObservers() {
         // 观察主题数据变化
         viewModel.themeList.observe(viewLifecycleOwner) { themeList ->
             themeList?.let {
-                themeAdapter.updateData(it)
+                // 更新主题部分的数据
+                val updatedSections = listOf(
+                    MainItem(
+                        title = "热门分类",
+                        categoryList = categoryList,
+                        themeList = null,
+                        sectionType = SectionType.CATEGORY
+                    ),
+                    MainItem(
+                        title = "推荐主题",
+                        categoryList = null,
+                        themeList = it,
+                        sectionType = SectionType.THEME
+                    )
+                )
+                mainAdapter.updateData(updatedSections)
                 Log.d("DiscoverFragment", "ThemeList 数据更新，数量: ${it.size}")
-            }
-        }
-
-        // 观察加载状态
-        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
-            Log.d("DiscoverFragment", "加载状态: $isLoading")
-        }
-
-        // 观察错误信息
-        viewModel.error.observe(viewLifecycleOwner) { errorMessage ->
-            errorMessage?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                Log.e("DiscoverFragment", "错误信息: $it")
             }
         }
     }

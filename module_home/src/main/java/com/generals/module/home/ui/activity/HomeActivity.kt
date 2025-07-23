@@ -11,6 +11,7 @@ import com.generals.module.home.R
 import com.generals.module.home.ui.adapter.VP2Adapter
 import com.generals.module.home.ui.fragment.HomeFragment
 import com.generals.module.square.ui.fragment.SquareFragment
+import com.generals.module_rankings.ui.fragment.HotFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 @Route(path = "/home/HomeActivity")
@@ -37,7 +38,8 @@ class HomeActivity : BaseActivity() {
         val fragmentList = listOf(
             { HomeFragment() },
             { SquareFragment() },
-            { DiscoverFragment() }
+            { DiscoverFragment() },
+            {HotFragment()}
         )
         viewPager2.adapter = VP2Adapter(this, fragmentList)
 //        viewPager2.isUserInputEnabled = false
@@ -56,7 +58,7 @@ class HomeActivity : BaseActivity() {
                     return@setOnItemSelectedListener true
                 }
                 R.id.bottom_hot -> {
-
+                    viewPager2.setCurrentItem(3,false)
                     return@setOnItemSelectedListener true
                 }
             }

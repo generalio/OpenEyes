@@ -62,5 +62,6 @@ dependencies {
     implementation(project(":lib_net"))
     implementation(project(":module_discover"))
     implementation(project(":module_square"))
+    implementation(project(":module_rankings"))
 
 }

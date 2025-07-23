@@ -97,7 +97,7 @@ class TitleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(item: SpecialTopicsDetailResponse, listener: NewThemeDetailClickListener?) {
         textView.text = item.brief
         subTextView.text = item.text
-        Glide.with(itemView.context).load(item.headerImage).into(imageView)
+        Glide.with(itemView.context).load(item.headerImage).apply(RequestOptions().centerCrop()).into(imageView)
 
         itemView.setOnClickListener {
             listener?.onItemClick(adapterPosition, item)
@@ -139,6 +139,7 @@ class VideoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 .into(iconImageView)
 
             Glide.with(itemView.context)
+
                 .load(currentItem.data.content.data.cover.feed)
                 .into(videoImageView)
 

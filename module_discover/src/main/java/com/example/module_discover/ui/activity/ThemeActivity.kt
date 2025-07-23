@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -34,9 +35,10 @@ class ThemeActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_theme)
-
+        postponeEnterTransition()
         // 获取传递的 ID
         val id = intent.getIntExtra("key_id", 12)
+        val imageUrl = intent.getStringExtra("image_url")
 
         initView()
         initEvent()
@@ -62,11 +64,9 @@ class ThemeActivity : BaseActivity() {
                 when (position) {
                     0 -> {
                         // 点击了标题
-                        Toast.makeText(this@ThemeActivity, "点击了标题: ${item.brief}", Toast.LENGTH_SHORT).show()
+
                     }
                     else -> {
-                        // 点击了视频项
-                        Toast.makeText(this@ThemeActivity, "点击了内容: ${item.brief}", Toast.LENGTH_SHORT).show()
                         // 这里可以跳转到详情页面
                         playVideo(item)
                     }
@@ -120,8 +120,6 @@ class ThemeActivity : BaseActivity() {
                 val playUrl = videoItem.data.content.data.playUrl ?: ""
                 val likeCount = videoItem.data.content.data.consumption?.collectionCount ?: 0
 
-                Log.d("ZXY", subTitle)
-
                 ARouter.getInstance().build("/video/VideoActivity")
                     .withInt("id", id)
                     .withString("title", title)
@@ -152,6 +150,18 @@ class ThemeActivity : BaseActivity() {
         viewModel.dataList.observe(this) { dataList ->
             dataList?.let {
                 adapter.updateData(it)
+
+                recyclerView.post {
+                    val titleViewHolder = recyclerView.findViewHolderForAdapterPosition(0)
+                    val topImageView = titleViewHolder?.itemView?.findViewById<ImageView>(R.id.iv_theme_cover)
+
+                    topImageView?.transitionName = "theme_image"
+
+                    // 简单粗暴：延迟500毫秒开始转场，给图片加载时间
+                    recyclerView.postDelayed({
+                        startPostponedEnterTransition()
+                    }, 50)
+                }
             }
         }
 

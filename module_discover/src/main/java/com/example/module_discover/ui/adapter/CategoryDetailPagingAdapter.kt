@@ -60,7 +60,7 @@ class CategoryDisplayAdapter(
         private val likeCount: TextView = itemView.findViewById(R.id.textView4)
         private val collectCount: TextView = itemView.findViewById(R.id.textView5)
         private val commentCount: TextView = itemView.findViewById(R.id.textView6)
-        private val shareButton: Button = itemView.findViewById(R.id.button2)
+
 
         fun bind(item: CategoryDetailItem, position: Int) {
             try {
@@ -82,8 +82,8 @@ class CategoryDisplayAdapter(
                 }
 
                 // 设置点击事件
-                itemView.setOnClickListener { onItemClick(item) }
-                shareButton.setOnClickListener { onShareClick(item) }
+                videoThumbnail.setOnClickListener { onItemClick(item) }
+
 
                 Log.d(TAG, "成功绑定数据 - position: $position, 类型: ${item.type}")
 

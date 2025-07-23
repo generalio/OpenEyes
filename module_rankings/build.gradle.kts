@@ -4,21 +4,21 @@ plugins {
     id("com.android.library")
     kotlin("kapt")
 }
-
 kapt {
     arguments {
         arg("AROUTER_MODULE_NAME", project.name)
     }
 }
-
 android {
-    namespace = "com.example.module_discover"
+    namespace = "com.example.module_rankings"
     compileSdk = 35
 
     defaultConfig {
-        //applicationId = "com.example.module_discover"
+//        applicationId = "com.example.module_rankings"
         minSdk = 30
         targetSdk = 34
+//        versionCode = 1
+//        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -52,8 +52,11 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.bundles.projectBase)
-    implementation(libs.arouter.api)
     kapt(libs.arouter.compiler)
+    implementation(libs.arouter.api)
+    implementation ("androidx.media3:media3-exoplayer:1.1.1")
+    implementation ("androidx.media3:media3-ui:1.1.1")
+    implementation ("androidx.media3:media3-common:1.1.1")
     debugImplementation ("com.squareup.leakcanary:leakcanary-android:2.14")
 
     implementation(project(":lib_base"))

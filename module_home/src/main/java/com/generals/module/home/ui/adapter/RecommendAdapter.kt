@@ -1,7 +1,6 @@
 package com.generals.module.home.ui.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +13,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.generals.lib.base.Util
 import com.generals.module.home.R
-import com.generals.module.home.model.bean.daily.Daily
 import com.generals.module.home.model.bean.recommend.Recommend
 
 /**

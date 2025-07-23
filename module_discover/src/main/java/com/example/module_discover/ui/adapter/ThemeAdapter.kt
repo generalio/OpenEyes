@@ -14,9 +14,8 @@ import com.example.module_discover.model.bean.ThemeItem
 
 // 定义点击事件接口
 interface ThemeItemClickListener {
-    fun onItemClick(position: Int, item: ThemeItem)
+    fun onItemClick(position: Int, item: ThemeItem, sharedElement: View)
 }
-
 class ThemeAdapter(
     private var list: List<ThemeItem>,
     private val listener: ThemeItemClickListener? = null
@@ -35,13 +34,16 @@ class ThemeAdapter(
 
     override fun onBindViewHolder(holder: ThemeHolder, position: Int) {
         val item = list[position]
-
         holder.description.text = item.title
         loadImage(holder.imageView, item.imageUrl)
 
-        // 绑定点击事件
+        // 点击事件
         holder.itemView.setOnClickListener {
-            listener?.onItemClick(position, item)
+            // 设置共享元素名称
+            androidx.core.view.ViewCompat.setTransitionName(holder.imageView, "theme_image")
+
+            // 传递共享元素
+            listener?.onItemClick(position, item, holder.imageView)
         }
     }
 
