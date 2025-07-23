@@ -9,7 +9,6 @@ import com.example.module_discover.ui.fragment.DiscoverFragment
 import com.generals.lib.base.BaseActivity
 import com.generals.module.home.R
 import com.generals.module.home.ui.adapter.ActivityVP2Adapter
-import com.generals.module.home.ui.adapter.VP2Adapter
 import com.generals.module.home.ui.fragment.HomeFragment
 import com.generals.module.square.ui.fragment.SquareFragment
 import com.generals.module_rankings.ui.fragment.HotFragment

@@ -21,6 +21,7 @@ class HomeFragment : Fragment() {
     private lateinit var homeActivity: HomeActivity
     private lateinit var mTabHome: TabLayout
     private lateinit var mVP2Home: ViewPager2
+    private lateinit var tabMediator: TabLayoutMediator
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,14 +51,20 @@ class HomeFragment : Fragment() {
             { RecommendFragment() }
         )
         mVP2Home.adapter = VP2Adapter(this@HomeFragment, fragmentList)
-        TabLayoutMediator(mTabHome,mVP2Home) { tab, position ->
+        tabMediator = TabLayoutMediator(mTabHome,mVP2Home) { tab, position ->
             if(position == 0) {
                 tab.text = "日报"
             }
             if(position == 1) {
                 tab.text = "推荐"
             }
-        }.attach()
+        }
+        tabMediator.attach()
+    }
+
+    override fun onDestroyView() {
+        tabMediator.detach()
+        super.onDestroyView()
     }
 
 }
