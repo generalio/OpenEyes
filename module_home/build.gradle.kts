@@ -63,5 +63,6 @@ dependencies {
     implementation(project(":module_discover"))
     implementation(project(":module_square"))
     implementation(project(":module_rankings"))
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
 }

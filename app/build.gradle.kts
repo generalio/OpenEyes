@@ -50,6 +50,7 @@ dependencies {
     implementation(project(":module_home"))
     implementation(project(":module_video"))
     implementation(project(":module_square"))
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.9.1")
 }

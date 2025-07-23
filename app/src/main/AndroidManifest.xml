@@ -21,7 +21,8 @@
         <activity
             android:name="com.generals.module.home.ui.activity.HomeActivity"
             android:launchMode="singleTask"
-            android:exported="true" >
+            android:exported="true"
+            android:theme="@style/Theme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

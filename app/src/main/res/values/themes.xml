@@ -6,5 +6,13 @@
     </style>
 
     <style name="Theme.OpenEyes" parent="Base.Theme.OpenEyes" />
+    
+    <style name="Theme.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#f5f5f5</item>
+        <item name="android:windowBackground">#f5f5f5</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowSplashScreenBrandingImage" tools:ignore="NewApi">@drawable/bottom</item>
+        <item name="postSplashScreenTheme">@style/Theme.OpenEyes</item>
+    </style>
 
 </resources>

@@ -2,6 +2,7 @@ package com.generals.module.home.ui.activity
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
@@ -21,6 +22,7 @@ class HomeActivity : BaseActivity() {
     private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
         ARouter.getInstance().inject(this)
