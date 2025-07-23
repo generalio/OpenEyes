@@ -154,10 +154,10 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
 
     // 释放动画和banner的Handler
     override fun onDestroyView() {
-        super.onDestroyView()
-        bannerAdapter.release()
         rotateAnimator?.cancel()
         rotateAnimator = null
+        bannerAdapter.release()
+        super.onDestroyView()
     }
 
     // 弹出加载动画

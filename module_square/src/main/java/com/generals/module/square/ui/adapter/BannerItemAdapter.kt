@@ -2,10 +2,12 @@ package com.generals.module.square.ui.adapter
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LongDef
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -21,49 +23,62 @@ import com.generals.module.square.ui.custom.BannerTransformer
 
 class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView.Adapter<BannerItemAdapter.ViewHolder>() {
 
-    lateinit var handler: Handler
-    lateinit var runnable: Runnable
+    private val handler: Handler = Handler(Looper.getMainLooper())
+    var runnable: Runnable? = null
+
+    fun release() {
+        handler.removeCallbacksAndMessages(null)
+        runnable = null
+    }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mVP2Banner: ViewPager2 = view.findViewById(R.id.vp2_banner)
 
+        private var pageChangeCallback: ViewPager2.OnPageChangeCallback? = null
+
         init {
             // 自动播放
-            handler = Handler(Looper.getMainLooper())
-            runnable = object : Runnable {
-                override fun run() {
-                    val nextPage = mVP2Banner.currentItem + 1
-                    if(nextPage == bannerList.size) {
-                        mVP2Banner.setCurrentItem(1, false)
-                    } else {
-                        mVP2Banner.currentItem = nextPage
-                    }
-                    handler.postDelayed(this, 3000)
-                }
-            }
-            handler.postDelayed(runnable, 3000) //启动自动播放
-
-            // 手动切换
-            mVP2Banner.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageScrollStateChanged(state: Int) {
-                    super.onPageScrollStateChanged(state)
-                    if(state == ViewPager2.SCROLL_STATE_DRAGGING) {
-                        handler.removeCallbacks(runnable)
-                    } else {
-                        if(state == ViewPager2.SCROLL_STATE_IDLE) {
-                            if(mVP2Banner.currentItem == bannerList.size - 1) {
-                                mVP2Banner.setCurrentItem(1, false) // 这个是不带动画的跳转
+            handler.let { handler ->
+                if(runnable == null) {
+                    runnable = object : Runnable {
+                        override fun run() {
+                            val nextPage = mVP2Banner.currentItem + 1
+                            if(nextPage == bannerList.size) {
+                                mVP2Banner.setCurrentItem(1, false)
+                            } else {
+                                mVP2Banner.currentItem = nextPage
                             }
-                            if(mVP2Banner.currentItem == 0) {
-                                mVP2Banner.setCurrentItem(bannerList.size - 2, false)
-                            }
-                            handler.removeCallbacks(runnable) // 把之前的任务移除
-                            handler.postDelayed(runnable, 3000)
+                            handler.postDelayed(this, 3000)
                         }
                     }
                 }
+                runnable?.let { runnable ->
+                    handler.postDelayed(runnable, 3000) //启动自动播放
+                    // 手动切换
+                    pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+                        override fun onPageScrollStateChanged(state: Int) {
+                            super.onPageScrollStateChanged(state)
+                            if(state == ViewPager2.SCROLL_STATE_DRAGGING) {
+                                handler.removeCallbacks(runnable)
+                            } else {
+                                if(state == ViewPager2.SCROLL_STATE_IDLE) {
+                                    if(mVP2Banner.currentItem == bannerList.size - 1) {
+                                        mVP2Banner.setCurrentItem(1, false) // 这个是不带动画的跳转
+                                    }
+                                    if(mVP2Banner.currentItem == 0) {
+                                        mVP2Banner.setCurrentItem(bannerList.size - 2, false)
+                                    }
+                                    handler.removeCallbacks(runnable) // 把之前的任务移除
+                                    handler.postDelayed(runnable, 3000)
+                                }
+                            }
+                        }
 
-            })
+                    }
+                    mVP2Banner.registerOnPageChangeCallback(pageChangeCallback!!)
+                }
+
+            }
             // 粗暴解决banner和外部vp2的滑动冲突，因为包一层不好拿到这个实例
             val rv = mVP2Banner.getChildAt(0) as RecyclerView
             rv.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
@@ -92,6 +107,13 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
 
             })
         }
+
+        fun release() {
+            pageChangeCallback?.let {
+                mVP2Banner.unregisterOnPageChangeCallback(it)
+                pageChangeCallback = null
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -117,9 +139,15 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
         return 1
     }
 
-    // 向外部fragment提供一个方法清除handler
-    fun release() {
-        handler.removeCallbacksAndMessages(null)
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+        holder.release()
+    }
+
+    // Fragment的onDestroyView方法最后应该会回到这里来
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        release()
+        super.onDetachedFromRecyclerView(recyclerView)
     }
 
 }

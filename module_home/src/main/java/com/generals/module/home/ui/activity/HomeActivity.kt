@@ -8,6 +8,7 @@ import com.alibaba.android.arouter.launcher.ARouter
 import com.example.module_discover.ui.fragment.DiscoverFragment
 import com.generals.lib.base.BaseActivity
 import com.generals.module.home.R
+import com.generals.module.home.ui.adapter.ActivityVP2Adapter
 import com.generals.module.home.ui.adapter.VP2Adapter
 import com.generals.module.home.ui.fragment.HomeFragment
 import com.generals.module.square.ui.fragment.SquareFragment
@@ -39,9 +40,9 @@ class HomeActivity : BaseActivity() {
             { HomeFragment() },
             { SquareFragment() },
             { DiscoverFragment() },
-            {HotFragment()}
+            { HotFragment() }
         )
-        viewPager2.adapter = VP2Adapter(this, fragmentList)
+        viewPager2.adapter = ActivityVP2Adapter(this, fragmentList)
 //        viewPager2.isUserInputEnabled = false
         bottomNavigation.setOnItemSelectedListener {
             when(it.itemId) {

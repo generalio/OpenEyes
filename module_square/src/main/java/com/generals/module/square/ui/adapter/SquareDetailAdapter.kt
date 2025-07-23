@@ -94,6 +94,9 @@ class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Ada
                 }
             }
         }
+        fun release() {
+            photoViewPager2.unregisterOnPageChangeCallback(pageChangeCallback)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

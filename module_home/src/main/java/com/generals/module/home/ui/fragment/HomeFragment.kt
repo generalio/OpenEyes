@@ -49,7 +49,7 @@ class HomeFragment : Fragment() {
             { DailyFragment() },
             { RecommendFragment() }
         )
-        mVP2Home.adapter = VP2Adapter(homeActivity, fragmentList)
+        mVP2Home.adapter = VP2Adapter(this@HomeFragment, fragmentList)
         TabLayoutMediator(mTabHome,mVP2Home) { tab, position ->
             if(position == 0) {
                 tab.text = "日报"
