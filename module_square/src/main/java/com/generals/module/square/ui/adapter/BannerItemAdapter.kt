@@ -2,12 +2,10 @@ package com.generals.module.square.ui.adapter
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LongDef
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.viewpager2.widget.ViewPager2
@@ -21,7 +19,8 @@ import com.generals.module.square.ui.custom.BannerTransformer
  * @Date : 2025/7/18 14:34
  */
 
-class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView.Adapter<BannerItemAdapter.ViewHolder>() {
+class BannerItemAdapter(private val bannerList: List<ItemDetail>) :
+    RecyclerView.Adapter<BannerItemAdapter.ViewHolder>() {
 
     private val handler: Handler = Handler(Looper.getMainLooper())
     var runnable: Runnable? = null
@@ -39,11 +38,11 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
         init {
             // 自动播放
             handler.let { handler ->
-                if(runnable == null) {
+                runnable?.let {
                     runnable = object : Runnable {
                         override fun run() {
                             val nextPage = mVP2Banner.currentItem + 1
-                            if(nextPage == bannerList.size) {
+                            if (nextPage == bannerList.size) {
                                 mVP2Banner.setCurrentItem(1, false)
                             } else {
                                 mVP2Banner.currentItem = nextPage
@@ -58,19 +57,23 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
                     pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
                         override fun onPageScrollStateChanged(state: Int) {
                             super.onPageScrollStateChanged(state)
-                            if(state == ViewPager2.SCROLL_STATE_DRAGGING) {
-                                handler.removeCallbacks(runnable)
-                            } else {
-                                if(state == ViewPager2.SCROLL_STATE_IDLE) {
-                                    if(mVP2Banner.currentItem == bannerList.size - 1) {
+                            when (state) {
+                                ViewPager2.SCROLL_STATE_DRAGGING -> handler.removeCallbacksAndMessages(
+                                    runnable
+                                )
+
+                                ViewPager2.SCROLL_STATE_IDLE -> {
+                                    if (mVP2Banner.currentItem == bannerList.size - 1) {
                                         mVP2Banner.setCurrentItem(1, false) // 这个是不带动画的跳转
                                     }
-                                    if(mVP2Banner.currentItem == 0) {
+                                    if (mVP2Banner.currentItem == 0) {
                                         mVP2Banner.setCurrentItem(bannerList.size - 2, false)
                                     }
                                     handler.removeCallbacks(runnable) // 把之前的任务移除
                                     handler.postDelayed(runnable, 3000)
                                 }
+
+                                else -> {}
                             }
                         }
 
@@ -84,16 +87,17 @@ class BannerItemAdapter(private val bannerList: List<ItemDetail>) : RecyclerView
             rv.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
                 var initialX = 0F
                 override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                    when(e.action) {
+                    when (e.action) {
                         MotionEvent.ACTION_DOWN -> {
                             initialX = e.x
                             mVP2Banner.parent.requestDisallowInterceptTouchEvent(true)
                         }
+
                         MotionEvent.ACTION_MOVE -> {
                             val dx = e.x - initialX
-                            if(dx > 0 && !rv.canScrollHorizontally(-1)) {
+                            if (dx > 0 && !rv.canScrollHorizontally(-1)) {
                                 mVP2Banner.parent.requestDisallowInterceptTouchEvent(false)
-                            } else if(dx < 0 && !rv.canScrollHorizontally(1)) {
+                            } else if (dx < 0 && !rv.canScrollHorizontally(1)) {
                                 mVP2Banner.parent.requestDisallowInterceptTouchEvent(false)
                             }
                         }

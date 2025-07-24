@@ -23,7 +23,7 @@ class DailyViewModel : ViewModel() {
 
     private val dailyFlow = HomeRepository.getDaily().flow.cachedIn(viewModelScope)
 
-    fun getDaily() : Flow<PagingData<Daily>> {
+    fun getDaily(): Flow<PagingData<Daily>> {
         return dailyFlow
     }
 

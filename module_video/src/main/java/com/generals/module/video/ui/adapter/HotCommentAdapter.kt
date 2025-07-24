@@ -22,7 +22,8 @@ import java.util.Locale
  * @Date : 2025/7/16 15:48
  */
 
-class HotCommentAdapter : ListAdapter<Comment, HotCommentAdapter.HotCommentViewHolder>(object : DiffUtil.ItemCallback<Comment>() {
+class HotCommentAdapter : ListAdapter<Comment, HotCommentAdapter.HotCommentViewHolder>(object :
+    DiffUtil.ItemCallback<Comment>() {
     override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
         return oldItem == newItem
     }
@@ -48,7 +49,7 @@ class HotCommentAdapter : ListAdapter<Comment, HotCommentAdapter.HotCommentViewH
         holder.mTvDate.text = sdf.format(Date(comment.data.createTime))
         holder.mTvContent.text = comment.data.message
         holder.mTvZan.text = comment.data.likeCount.toString()
-        if(comment.data.user != null) {
+        if (comment.data.user != null) {
             Glide.with(holder.mIvAvatar.context)
                 .load(comment.data.user.avatar)
                 .error(R.drawable.ic_avatar)

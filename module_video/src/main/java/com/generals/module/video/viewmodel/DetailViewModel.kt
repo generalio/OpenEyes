@@ -28,11 +28,14 @@ class DetailViewModel : ViewModel() {
         val disposable = DetailRepository.getVideoRelated(videoId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe( { response ->
+            .subscribe({ response ->
                 val videoList = response.itemList.filter { it.type == "videoSmallCard" }
                 _videoRelatedLiveData.postValue(videoList)
-            } , {
-                Log.d("zzx", "(${Error().stackTrace[0].run { "$fileName:$lineNumber" }}) -> ${it.stackTrace}")
+            }, {
+                Log.d(
+                    "zzx",
+                    "(${Error().stackTrace[0].run { "$fileName:$lineNumber" }}) -> ${it.stackTrace}"
+                )
             })
         compositeDisposable.add(disposable)
     }

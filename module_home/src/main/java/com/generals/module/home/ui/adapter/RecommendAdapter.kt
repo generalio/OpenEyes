@@ -21,41 +21,18 @@ import com.generals.module.home.model.bean.recommend.Recommend
  * @Date : 2025/7/14 20:35
  */
 
-class RecommendAdapter(val itemClickListener: OnItemClickListener) : PagingDataAdapter<Recommend, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Recommend>() {
-    override fun areContentsTheSame(oldItem: Recommend, newItem: Recommend): Boolean {
-        return newItem == oldItem
-    }
+class RecommendAdapter(val itemClickListener: OnItemClickListener) :
+    PagingDataAdapter<Recommend, RecyclerView.ViewHolder>(object :
+        DiffUtil.ItemCallback<Recommend>() {
+        override fun areContentsTheSame(oldItem: Recommend, newItem: Recommend): Boolean {
+            return newItem == oldItem
+        }
 
-    override fun areItemsTheSame(oldItem: Recommend, newItem: Recommend): Boolean {
-//        var newId = 0
-//        if(newItem.data.type == "textCard") {
-//            newId = newItem.data.id
-//        } else {
-//            if(newItem.data.type == "followCard") {
-//                newId = newItem.data.content.data.id
-//            } else {
-//                if(newItem.data.type == "videoSmallCard") {
-//                    newId = newItem.data.id
-//                }
-//            }
-//        }
-//
-//        var oldId = 0
-//        if(oldItem.data.type == "textCard") {
-//            oldId = oldItem.data.id
-//        } else {
-//            if(oldItem.data.type == "followCard") {
-//                oldId = oldItem.data.content.data.id
-//            } else {
-//                if(oldItem.data.type == "videoSmallCard") {
-//                    oldId = oldItem.data.id
-//                }
-//            }
-//        }
-        return newItem == oldItem
-    }
+        override fun areItemsTheSame(oldItem: Recommend, newItem: Recommend): Boolean {
+            return newItem == oldItem
+        }
 
-}) {
+    }) {
 
     companion object {
         private val TYPE_TITLE = 0
@@ -103,13 +80,15 @@ class RecommendAdapter(val itemClickListener: OnItemClickListener) : PagingDataA
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val daily = getItem(position)
         daily?.let {
-            when(holder) {
+            when (holder) {
                 is TitleViewHolder -> {
                     holder.mTvTitle.text = daily.data.text
                 }
+
                 is VideoViewHolder -> {
                     holder.mTvVideoTitle.text = daily.data.content.data.title
-                    holder.mTvDesc.text = daily.data.content.data.author.name + " / #" + daily.data.content.data.category
+                    holder.mTvDesc.text =
+                        daily.data.content.data.author.name + " / #" + daily.data.content.data.category
                     Glide.with(holder.mIvAvatar.context)
                         .load(daily.data.content.data.author.icon)
                         .error(R.drawable.ic_avatar)
@@ -121,6 +100,7 @@ class RecommendAdapter(val itemClickListener: OnItemClickListener) : PagingDataA
                         .into(holder.mIvCover)
                     holder.mTvVideoTime.text = Util.transferTime(daily.data.content.data.duration)
                 }
+
                 is VideoSmallViewHolder -> {
                     holder.mTvVideoTitle.text = daily.data.title
                     holder.mTvDesc.text = daily.data.author.name + " / #" + daily.data.category
@@ -137,30 +117,28 @@ class RecommendAdapter(val itemClickListener: OnItemClickListener) : PagingDataA
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if(viewType == TYPE_TITLE) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_title, parent, false)
-            return TitleViewHolder(view)
-        } else {
-            if(viewType == TYPE_VIDEO) {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video, parent, false)
-                return VideoViewHolder(view)
-            } else {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video_small, parent, false)
-                return VideoSmallViewHolder(view)
-            }
+        val view = LayoutInflater.from(parent.context).inflate(
+            when (viewType) {
+                TYPE_TITLE -> R.layout.item_title
+                TYPE_VIDEO -> R.layout.item_video
+                TYPE_VIDEO_SMALL -> R.layout.item_video_small
+                else -> throw IllegalArgumentException("error type")
+            }, parent, false
+        )
+        return when (viewType) {
+            TYPE_TITLE -> TitleViewHolder(view)
+            TYPE_VIDEO -> VideoViewHolder(view)
+            TYPE_VIDEO_SMALL -> VideoSmallViewHolder(view)
+            else -> throw IllegalArgumentException("error type!")
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)!!
-        if(item.type == "textCard") {
-            return TYPE_TITLE
-        } else {
-            if(item.type == "followCard") {
-                return TYPE_VIDEO
-            } else {
-                return TYPE_VIDEO_SMALL
-            }
+        return when (item.type) {
+            "textCard" -> TYPE_TITLE
+            "followCard" -> TYPE_VIDEO
+            else -> TYPE_VIDEO_SMALL
         }
     }
 }

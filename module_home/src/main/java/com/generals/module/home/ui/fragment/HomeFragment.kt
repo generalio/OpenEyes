@@ -51,13 +51,8 @@ class HomeFragment : Fragment() {
             { RecommendFragment() }
         )
         mVP2Home.adapter = VP2Adapter(this@HomeFragment, fragmentList)
-        tabMediator = TabLayoutMediator(mTabHome,mVP2Home) { tab, position ->
-            if(position == 0) {
-                tab.text = "日报"
-            }
-            if(position == 1) {
-                tab.text = "推荐"
-            }
+        tabMediator = TabLayoutMediator(mTabHome, mVP2Home) { tab, position ->
+            tab.text = if (position == 0) "日报" else "推荐"
         }
         tabMediator.attach()
     }

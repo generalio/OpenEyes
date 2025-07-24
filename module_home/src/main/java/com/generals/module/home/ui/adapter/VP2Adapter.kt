@@ -10,7 +10,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
  * @Date : 2025/7/13 16:23
  */
 
-class VP2Adapter(fragmentActivity: Fragment, private val list: List<() -> Fragment>) : FragmentStateAdapter(fragmentActivity) {
+class VP2Adapter(fragmentActivity: Fragment, private val list: List<() -> Fragment>) :
+    FragmentStateAdapter(fragmentActivity) {
 
     /**
      * 这里的父级owner需要为fragment而不能为activity，不然FragmentStateAdapter会把activity的FragmentManager存进去

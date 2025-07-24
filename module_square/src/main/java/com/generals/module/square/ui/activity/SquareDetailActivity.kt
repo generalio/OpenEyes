@@ -1,21 +1,14 @@
 package com.generals.module.square.ui.activity
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.transition.Fade
 import android.view.Window
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.activity.addCallback
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.FragmentTransaction
 import androidx.viewpager2.widget.ViewPager2
 import com.generals.lib.base.BaseActivity
 import com.generals.module.square.R
 import com.generals.module.square.model.bean.Photo
 import com.generals.module.square.ui.adapter.SquareDetailAdapter
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class SquareDetailActivity : BaseActivity() {
 

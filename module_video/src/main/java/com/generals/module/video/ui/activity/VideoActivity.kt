@@ -4,24 +4,15 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.res.Configuration
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.addCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager2.widget.ViewPager2
 import com.alibaba.android.arouter.facade.annotation.Autowired
 import com.alibaba.android.arouter.facade.annotation.Route
 import com.alibaba.android.arouter.launcher.ARouter
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.generals.lib.base.BaseActivity
 import com.generals.module.video.R
 import com.generals.module.video.model.bean.VideoInfo
@@ -38,7 +29,7 @@ import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 
 @Route(path = "/video/VideoActivity")
-class   VideoActivity : BaseActivity() {
+class VideoActivity : BaseActivity() {
 
     // 这里是video跳转过来时一些必要的参数
 
@@ -113,7 +104,22 @@ class   VideoActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_video)
         ARouter.getInstance().inject(this)
-        videoInfo = VideoInfo(id,title, subTitle, description, collectionCount, shareCount, replyCount, background, playUrl, authorName, authorIcon, authorDescription, cover, likeCount)
+        videoInfo = VideoInfo(
+            id,
+            title,
+            subTitle,
+            description,
+            collectionCount,
+            shareCount,
+            replyCount,
+            background,
+            playUrl,
+            authorName,
+            authorIcon,
+            authorDescription,
+            cover,
+            likeCount
+        )
 
         initView()
         initEvent()
@@ -135,26 +141,20 @@ class   VideoActivity : BaseActivity() {
             { VideoDetailFragment() },
             { VideoCommentFragment() }
         )
-        viewPager2.adapter = VP2Adapter(this,fragmentList)
-        TabLayoutMediator(tabLayout,viewPager2) { tab, position ->
-            if(position == 0) {
-                tab.text = "简介"
-            } else {
-                if(position == 1) {
-                    tab.text = "评论"
-                }
-            }
+        viewPager2.adapter = VP2Adapter(this, fragmentList)
+        TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+            tab.text = if (position == 0) "简介" else "评论"
         }.attach()
         tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                when(tab.position) {
+                when (tab.position) {
                     1 -> tab.text = "评 论"
                     0 -> tab.text = "简 介"
                 }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-                when(tab.position) {
+                when (tab.position) {
                     1 -> tab.text = "评论"
                     0 -> tab.text = "简介"
                 }
@@ -201,12 +201,12 @@ class   VideoActivity : BaseActivity() {
 
                 override fun onQuitFullscreen(url: String?, vararg objects: Any?) {
                     super.onQuitFullscreen(url, *objects)
-                    if(orientationUtils != null) {
+                    if (orientationUtils != null) {
                         orientationUtils.backToProtVideo()
                     }
                 }
             }).setLockClickListener { _, lock ->
-                if(orientationUtils != null) {
+                if (orientationUtils != null) {
                     orientationUtils.isEnable = !lock
                 }
             }.build(videoPlayer)
@@ -215,13 +215,13 @@ class   VideoActivity : BaseActivity() {
             videoPlayer.startWindowFullscreen(this, true, true) // 是否隐藏actionBar和statusBar
         }
         videoPlayer.backButton.setOnClickListener {
-            if(!GSYVideoManager.backFromWindowFull(this@VideoActivity)) {
-                if(orientationUtils != null) {
+            if (!GSYVideoManager.backFromWindowFull(this@VideoActivity)) {
+                if (orientationUtils != null) {
                     orientationUtils.backToProtVideo()
                 }
                 finish()
             } else {
-                if(orientationUtils != null) {
+                if (orientationUtils != null) {
                     orientationUtils.backToProtVideo()
                 }
             }
@@ -229,10 +229,10 @@ class   VideoActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if(orientationUtils != null) {
+        if (orientationUtils != null) {
             orientationUtils.backToProtVideo()
         }
-        if(GSYVideoManager.backFromWindowFull(this)) {
+        if (GSYVideoManager.backFromWindowFull(this)) {
             return
         }
         super.onBackPressed()
@@ -252,17 +252,17 @@ class   VideoActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if(isPlay) {
+        if (isPlay) {
             videoPlayer.currentPlayer.release()
         }
-        if(orientationUtils != null) {
+        if (orientationUtils != null) {
             orientationUtils.releaseListener()
         }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if(isPlay || !isPause) {
+        if (isPlay || !isPause) {
             videoPlayer.onConfigurationChanged(this, newConfig, orientationUtils, true, true)
         }
     }

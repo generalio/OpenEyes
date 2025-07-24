@@ -33,7 +33,8 @@ class SquareViewModel : ViewModel() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ response ->
-                val bannerList = response.itemList.filter { it.type == "horizontalScrollCard" && it.data.dataType == "HorizontalScrollCard" }
+                val bannerList =
+                    response.itemList.filter { it.type == "horizontalScrollCard" && it.data.dataType == "HorizontalScrollCard" }
                 _bannerLiveData.postValue(bannerList[0].data.itemList)
             }, {
                 Log.d("zzx", "(${Error().stackTrace[0].run { "$fileName:$lineNumber" }}) -> $it")
@@ -48,7 +49,10 @@ class SquareViewModel : ViewModel() {
             .subscribe({ response ->
                 _squareLiveData.postValue(response)
             }, {
-                Log.d("zzx", "(${Error().stackTrace[0].run { "$fileName:$lineNumber" }}) -> ${it.stackTraceToString()}")
+                Log.d(
+                    "zzx",
+                    "(${Error().stackTrace[0].run { "$fileName:$lineNumber" }}) -> ${it.stackTraceToString()}"
+                )
             })
         compositeDisposable.add(disposable)
     }

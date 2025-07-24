@@ -24,16 +24,17 @@ import com.generals.module.square.model.bean.Square
  * @Date : 2025/7/18 20:47
  */
 
-class SquareAdapter(private val itemClickListener: OnItemClickListener) : ListAdapter<Square, SquareAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Square>() {
-    override fun areContentsTheSame(oldItem: Square, newItem: Square): Boolean {
-        return oldItem == newItem
-    }
+class SquareAdapter(private val itemClickListener: OnItemClickListener) :
+    ListAdapter<Square, SquareAdapter.ViewHolder>(object : DiffUtil.ItemCallback<Square>() {
+        override fun areContentsTheSame(oldItem: Square, newItem: Square): Boolean {
+            return oldItem == newItem
+        }
 
-    override fun areItemsTheSame(oldItem: Square, newItem: Square): Boolean {
-        return oldItem.id == newItem.id
-    }
+        override fun areItemsTheSame(oldItem: Square, newItem: Square): Boolean {
+            return oldItem.id == newItem.id
+        }
 
-}) {
+    }) {
 
     interface OnItemClickListener {
         fun onImageClick(position: Int, view: ImageView)
@@ -64,7 +65,7 @@ class SquareAdapter(private val itemClickListener: OnItemClickListener) : ListAd
             .into(holder.mIvCover)
         holder.mIvPicList.isVisible = (square.data.content.data.urls.size > 1)
         holder.mTvTitle.text = square.data.content.data.description
-        if(square.data.content.data.owner != null) {
+        if (square.data.content.data.owner != null) {
             holder.mTvAuthorName.text = square.data.content.data.owner.nickname
             Glide.with(holder.mIvAvatar)
                 .load(square.data.content.data.owner.avatar)

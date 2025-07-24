@@ -13,13 +13,15 @@ import com.bumptech.glide.Glide
 import com.generals.lib.base.Util
 import com.generals.module.square.R
 import com.generals.module.square.model.bean.Photo
+
 /**
  * @Desc : 详情的Adapter
  * @Author : zzx
  * @Date : 2025/7/20 20:47
  */
 
-class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Adapter<SquareDetailAdapter.ViewHolder>(), PhotoAdapter.GetDetail {
+class SquareDetailAdapter(private val photoList: List<Photo>) :
+    RecyclerView.Adapter<SquareDetailAdapter.ViewHolder>(), PhotoAdapter.GetDetail {
 
     private var photoHeight = 0F
 
@@ -46,7 +48,7 @@ class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Ada
                 val height = layoutDetail.height.toFloat()
                 val detailY = layoutDetail.bottom.toFloat()
                 // 每张图片大小不同，故需要单独处理一下
-                if((photoViewPager2.bottom - height) < detailY && layoutDetail.translationY == 0F) {
+                if ((photoViewPager2.bottom - height) < detailY && layoutDetail.translationY == 0F) {
                     photoViewPager2.pivotY = 0f
                     val scale = (photoViewPager2.bottom - height) / detailY
                     photoViewPager2.scaleY = scale
@@ -60,47 +62,51 @@ class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Ada
             photoViewPager2.registerOnPageChangeCallback(pageChangeCallback)
             // 将详情页从底部弹出
             mTvDetail.setOnClickListener {
-                val height = layoutDetail.height.toFloat()
-                val detailY = layoutDetail.bottom.toFloat()
-                if(layoutDetail.translationY == 0F) {
-                    layoutDetail.translationY = height
-                }
-                layoutDetail.animate().translationY(0F)
-                // 如果被挡住了则对上面的图片进行缩放
-                if((photoViewPager2.bottom - height) < detailY) {
-                    photoViewPager2.pivotY = 0f
-                    val scale = (photoViewPager2.bottom - height) / detailY
-                    photoViewPager2.animate().scaleY(scale)
-                    photoViewPager2.animate().scaleX(scale)
-                }
+                popOut()
             }
             // 详情页弹回去
             itemView.setOnClickListener {
-                if(layoutDetail.translationY == 0F) {
-                    layoutDetail.animate().translationY(layoutDetail.height.toFloat())
-                }
-                if(photoViewPager2.scaleX != 1F || photoViewPager2.scaleY != 1F) {
-                    photoViewPager2.animate().scaleX(1F)
-                    photoViewPager2.animate().scaleY(1F)
-                }
+                popBack()
             }
             mTvExit.setOnClickListener {
-                if(layoutDetail.translationY == 0F) {
-                    layoutDetail.animate().translationY(layoutDetail.height.toFloat())
-                }
-                if(photoViewPager2.scaleX != 1F || photoViewPager2.scaleY != 1F) {
-                    photoViewPager2.animate().scaleX(1F)
-                    photoViewPager2.animate().scaleY(1F)
-                }
+                popBack()
             }
         }
+
         fun release() {
             photoViewPager2.unregisterOnPageChangeCallback(pageChangeCallback)
+        }
+
+        private fun popBack() {
+            if (layoutDetail.translationY == 0F) {
+                layoutDetail.animate().translationY(layoutDetail.height.toFloat())
+            }
+            if (photoViewPager2.scaleX != 1F || photoViewPager2.scaleY != 1F) {
+                photoViewPager2.animate().scaleX(1F)
+                photoViewPager2.animate().scaleY(1F)
+            }
+        }
+
+        private fun popOut() {
+            val height = layoutDetail.height.toFloat()
+            val detailY = layoutDetail.bottom.toFloat()
+            if (layoutDetail.translationY == 0F) {
+                layoutDetail.translationY = height
+            }
+            layoutDetail.animate().translationY(0F)
+            // 如果被挡住了则对上面的图片进行缩放
+            if ((photoViewPager2.bottom - height) < detailY) {
+                photoViewPager2.pivotY = 0f
+                val scale = (photoViewPager2.bottom - height) / detailY
+                photoViewPager2.animate().scaleY(scale)
+                photoViewPager2.animate().scaleX(scale)
+            }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_square_detail, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_square_detail, parent, false)
         return ViewHolder(view)
     }
 
@@ -111,7 +117,8 @@ class SquareDetailAdapter(private val photoList: List<Photo>) : RecyclerView.Ada
             holder.layoutDetail.translationY = holder.layoutDetail.height.toFloat()
         }
         holder.photoViewPager2.adapter = PhotoAdapter(photoList[position].urls, this)
-        holder.mTvCount.text = "${holder.photoViewPager2.currentItem + 1} / ${photoList[holder.photoViewPager2.currentItem].urls.size}"
+        holder.mTvCount.text =
+            "${holder.photoViewPager2.currentItem + 1} / ${photoList[holder.photoViewPager2.currentItem].urls.size}"
         Glide.with(holder.mIvAvatar.context)
             .load(photoList[position].avatar)
             .circleCrop()

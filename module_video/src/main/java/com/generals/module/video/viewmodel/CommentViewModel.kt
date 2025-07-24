@@ -25,17 +25,34 @@ class CommentViewModel : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    private val _hotCommentLiveData: MutableLiveData<CommentResponse> = MutableLiveData()
-    val hotCommentLiveData: LiveData<CommentResponse> get() = _hotCommentLiveData
+    private val _hotCommentLiveData: MutableLiveData<List<Comment>> = MutableLiveData()
+    val hotCommentLiveData: LiveData<List<Comment>> get() = _hotCommentLiveData
 
     fun getHotComment(videoId: Int) {
         val disposable = CommentRepository.getHotComment(videoId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe( {
-                _hotCommentLiveData.postValue(it)
-            } , {
-                Log.d("zzx", "(${Error().stackTrace[0].run { "$fileName:$lineNumber" }}) -> ${it.stackTrace}")
+            .subscribe({ response ->
+                val itemList = response.itemList
+                val hotList: MutableList<Comment> = mutableListOf()
+                for (item in itemList) {
+                    if (item.type == "reply") {
+                        hotList.add(item)
+                    }
+                    if (item.type == "leftAlignTextHeader" && item.data.text == "最新评论") {
+                        break
+                    }
+                }
+                // 特殊处理，有的视频接口无最热评论故用最新评论的第一页代替
+                if (itemList.isNotEmpty() && itemList[0].data.text == "最新评论") {
+                    hotList.addAll(itemList.filter { it.type == "reply" })
+                }
+                _hotCommentLiveData.postValue(hotList)
+            }, {
+                Log.d(
+                    "zzx",
+                    "(${Error().stackTrace[0].run { "$fileName:$lineNumber" }}) -> ${it.stackTrace}"
+                )
             })
         compositeDisposable.add(disposable)
     }

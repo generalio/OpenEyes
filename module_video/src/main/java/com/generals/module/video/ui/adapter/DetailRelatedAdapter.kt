@@ -19,16 +19,18 @@ import com.generals.module.video.model.bean.related.VideoRelated
  * @Date : 2025/7/17 15:05
  */
 
-class DetailRelatedAdapter(private val itemClickListener: OnItemClickListener) : ListAdapter<VideoRelated, DetailRelatedAdapter.ViewHolder>(object : DiffUtil.ItemCallback<VideoRelated>() {
-    override fun areContentsTheSame(oldItem: VideoRelated, newItem: VideoRelated): Boolean {
-        return oldItem == newItem
-    }
+class DetailRelatedAdapter(private val itemClickListener: OnItemClickListener) :
+    ListAdapter<VideoRelated, DetailRelatedAdapter.ViewHolder>(object :
+        DiffUtil.ItemCallback<VideoRelated>() {
+        override fun areContentsTheSame(oldItem: VideoRelated, newItem: VideoRelated): Boolean {
+            return oldItem == newItem
+        }
 
-    override fun areItemsTheSame(oldItem: VideoRelated, newItem: VideoRelated): Boolean {
-        return newItem.data.id == oldItem.data.id
-    }
+        override fun areItemsTheSame(oldItem: VideoRelated, newItem: VideoRelated): Boolean {
+            return newItem.data.id == oldItem.data.id
+        }
 
-}) {
+    }) {
 
     interface OnItemClickListener {
         fun onVideoCoverClick(videoInfo: VideoRelated)
@@ -54,7 +56,7 @@ class DetailRelatedAdapter(private val itemClickListener: OnItemClickListener) :
             holder.itemView.alpha = 0F
             holder.itemView.animate().alpha(1F).setDuration(600).start()
             val author = videoInfo.data.author
-            if(author != null) {
+            if (author != null) {
                 holder.mTvAuthorName.text = videoInfo.data.author.name
                 Glide.with(holder.mIvAvatar.context)
                     .load(videoInfo.data.author.icon)
@@ -78,7 +80,8 @@ class DetailRelatedAdapter(private val itemClickListener: OnItemClickListener) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_detail_related, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_detail_related, parent, false)
         return ViewHolder(view)
     }
 

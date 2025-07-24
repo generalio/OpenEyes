@@ -17,7 +17,10 @@ import com.generals.module.video.model.bean.VideoInfo
  * @Date : 2025/7/17 11:03
  */
 
-class DetailInfoAdapter(private val videoInfo: VideoInfo, private val itemClickListener: OnItemClickListener) : RecyclerView.Adapter<DetailInfoAdapter.ViewHolder>() {
+class DetailInfoAdapter(
+    private val videoInfo: VideoInfo,
+    private val itemClickListener: OnItemClickListener
+) : RecyclerView.Adapter<DetailInfoAdapter.ViewHolder>() {
 
     // 一些点击接口
     interface OnItemClickListener {
@@ -61,7 +64,8 @@ class DetailInfoAdapter(private val videoInfo: VideoInfo, private val itemClickL
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_detail_info, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_detail_info, parent, false)
         return ViewHolder(view)
     }
 

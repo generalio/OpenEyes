@@ -24,7 +24,7 @@ class BannerTransformer : ViewPager2.PageTransformer {
     // -1 0 1
     override fun transformPage(page: View, position: Float) {
         // 中间大，两边小
-        val transition = MIN_VALUE + (1 - abs(position))  * (MAX_VALUE - MIN_VALUE)
+        val transition = MIN_VALUE + (1 - abs(position)) * (MAX_VALUE - MIN_VALUE)
         val transitionAlpha = MIN_ALPHA + (1 - abs(position)) * (MAX_ALPHA - MIN_ALPHA)
         page.scaleX = transition
         page.scaleY = transition // 缩放

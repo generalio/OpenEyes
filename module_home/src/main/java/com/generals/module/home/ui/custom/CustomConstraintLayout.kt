@@ -16,7 +16,8 @@ import kotlin.math.abs
  * @Date : 2025/7/17 16:30
  */
 
-class CustomConstraintLayout(context: Context, attributeSet: AttributeSet?) : ConstraintLayout(context, attributeSet) {
+class CustomConstraintLayout(context: Context, attributeSet: AttributeSet?) :
+    ConstraintLayout(context, attributeSet) {
 
     private var initialX = 0F
 
@@ -28,6 +29,7 @@ class CustomConstraintLayout(context: Context, attributeSet: AttributeSet?) : Co
                 initialX = ev.x
                 parent.requestDisallowInterceptTouchEvent(true) // 禁止父布局拦截
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val dx = ev.x - initialX
                 val child = getChildAt(1) as ViewPager2
@@ -39,6 +41,7 @@ class CustomConstraintLayout(context: Context, attributeSet: AttributeSet?) : Co
                 // 只有不能再滑时，才不禁止父布局进行拦截
                 parent.requestDisallowInterceptTouchEvent(canScroll)
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 parent.requestDisallowInterceptTouchEvent(false)
             }

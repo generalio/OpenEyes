@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 
 class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
 
-    private val viewModel : RecommendViewModel by viewModels()
+    private val viewModel: RecommendViewModel by viewModels()
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var homeActivity: HomeActivity
@@ -71,14 +71,16 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
 
     private fun initEvent() {
         checkNetWork()
+        // 重新拉取网络请求
         mBtnRetry.setOnClickListener {
             showLoading()
             checkNetWork()
         }
     }
 
+    // 检查网络链接
     private fun checkNetWork() {
-        if(homeActivity.isNetworkAvailable()) {
+        if (homeActivity.isNetworkAvailable()) {
             loadData()
         } else {
             mTvLoading.visibility = View.GONE
@@ -98,7 +100,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
             }
         }
         adapter.addLoadStateListener { loadState ->
-            if(loadState.refresh is LoadState.NotLoading) {
+            if (loadState.refresh is LoadState.NotLoading) {
                 hideLoading()
             }
         }
@@ -123,7 +125,8 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
         val authorName = recommend.data.content.data.author.name
         val authorIcon = recommend.data.content.data.author.icon
         val authorDescription = recommend.data.content.data.author.description
-        val subTitle = recommend.data.content.data.author.name + " / #" + recommend.data.content.data.category
+        val subTitle =
+            recommend.data.content.data.author.name + " / #" + recommend.data.content.data.category
         val description = recommend.data.content.data.description
         val collectionCount = recommend.data.content.data.consumption.realCollectionCount
         val shareCount = recommend.data.content.data.consumption.shareCount
@@ -132,23 +135,22 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
         val cover = recommend.data.content.data.cover.detail
         val playUrl = recommend.data.content.data.playUrl
         val likeCount = recommend.data.content.data.consumption.collectionCount
-
-        ARouter.getInstance().build("/video/VideoActivity")
-            .withInt("id", id)
-            .withString("title", title)
-            .withString("subTitle", subTitle)
-            .withString("description", description)
-            .withInt("collectionCount", collectionCount)
-            .withInt("shareCount", shareCount)
-            .withInt("replyCount", replyCount)
-            .withString("background", background)
-            .withString("cover", cover)
-            .withString("playUrl", playUrl)
-            .withString("authorName", authorName)
-            .withString("authorIcon", authorIcon)
-            .withString("authorDescription", authorDescription)
-            .withInt("likeCount", likeCount)
-            .navigation()
+        goToVideo(
+            id,
+            title,
+            subTitle,
+            description,
+            collectionCount,
+            shareCount,
+            replyCount,
+            background,
+            cover,
+            playUrl,
+            authorName,
+            authorIcon,
+            authorDescription,
+            likeCount
+        )
     }
 
     // 小型视频的跳转（接口数据与普通的不一样）
@@ -167,7 +169,40 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
         val cover = recommend.data.cover.detail
         val playUrl = recommend.data.playUrl
         val likeCount = recommend.data.consumption.collectionCount
+        goToVideo(
+            id,
+            title,
+            subTitle,
+            description,
+            collectionCount,
+            shareCount,
+            replyCount,
+            background,
+            cover,
+            playUrl,
+            authorName,
+            authorIcon,
+            authorDescription,
+            likeCount
+        )
+    }
 
+    private fun goToVideo(
+        id: Int,
+        title: String,
+        subTitle: String,
+        description: String,
+        collectionCount: Int,
+        shareCount: Int,
+        replyCount: Int,
+        background: String,
+        cover: String,
+        playUrl: String,
+        authorName: String,
+        authorIcon: String,
+        authorDescription: String,
+        likeCount: Int
+    ) {
         ARouter.getInstance().build("/video/VideoActivity")
             .withInt("id", id)
             .withString("title", title)

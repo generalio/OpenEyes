@@ -18,7 +18,8 @@ import com.generals.module.square.R
  * @Date : 2025/7/20 20:53
  */
 
-class PhotoAdapter(private val photoList: List<String>, private val getHeight : GetDetail) : RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
+class PhotoAdapter(private val photoList: List<String>, private val getHeight: GetDetail) :
+    RecyclerView.Adapter<PhotoAdapter.ViewHolder>() {
 
     interface GetDetail {
         fun getHeight(fl: Float)
@@ -44,7 +45,7 @@ class PhotoAdapter(private val photoList: List<String>, private val getHeight : 
                     transition: Transition<in Drawable>?
                 ) {
                     holder.mIvPhoto.setImageDrawable(resource)
-                    getHeight.getHeight(holder.mIvPhoto.height.toFloat())
+                    getHeight.getHeight(holder.mIvPhoto.height.toFloat()) // 加载好图片后返回他的高度
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {}

@@ -26,7 +26,7 @@ import com.generals.module.home.viewmodel.DailyViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class DailyFragment : Fragment(),DailyAdapter.OnItemClickListener {
+class DailyFragment : Fragment(), DailyAdapter.OnItemClickListener {
 
     private val viewModel: DailyViewModel by viewModels()
 
@@ -60,7 +60,8 @@ class DailyFragment : Fragment(),DailyAdapter.OnItemClickListener {
 
         recyclerView = view.findViewById(R.id.rv_daily)
         recyclerView.layoutManager = LinearLayoutManager(homeActivity)
-        recyclerView.adapter = adapter.withLoadStateFooter(FooterAdapter{ adapter.retry() }) // 设置adapter以及断网的adapter
+        recyclerView.adapter =
+            adapter.withLoadStateFooter(FooterAdapter { adapter.retry() }) // 设置adapter以及断网的adapter
         recyclerView.visibility = View.GONE
         mTvLoading.text = "正在加载中..."
         showLoading()
@@ -78,7 +79,7 @@ class DailyFragment : Fragment(),DailyAdapter.OnItemClickListener {
 
     // 检查网络是否链接
     private fun checkNetWork() {
-        if(homeActivity.isNetworkAvailable()) {
+        if (homeActivity.isNetworkAvailable()) {
             loadData()
         } else {
             mTvLoading.visibility = View.GONE
@@ -99,7 +100,7 @@ class DailyFragment : Fragment(),DailyAdapter.OnItemClickListener {
             }
         }
         adapter.addLoadStateListener { loadState ->
-            if(loadState.refresh is LoadState.NotLoading) {
+            if (loadState.refresh is LoadState.NotLoading) {
                 hideLoading()
             }
         }
@@ -127,7 +128,8 @@ class DailyFragment : Fragment(),DailyAdapter.OnItemClickListener {
         val authorName = daily.data.content.data.author.name
         val authorIcon = daily.data.content.data.author.icon
         val authorDescription = daily.data.content.data.author.description
-        val subTitle = daily.data.content.data.author.name + " / #" + daily.data.content.data.category
+        val subTitle =
+            daily.data.content.data.author.name + " / #" + daily.data.content.data.category
         val description = daily.data.content.data.description
         val collectionCount = daily.data.content.data.consumption.realCollectionCount
         val shareCount = daily.data.content.data.consumption.shareCount

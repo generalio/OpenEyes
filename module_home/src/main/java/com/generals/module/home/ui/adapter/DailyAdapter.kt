@@ -21,38 +21,18 @@ import com.generals.module.home.model.bean.daily.Daily
  * @Date : 2025/7/14 11:18
  */
 
-class DailyAdapter(val itemClickListener: OnItemClickListener) : PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Daily>() {
-    /**
-     * 接口没有唯一ID标识符(id基本都是0，header字段里的id不为0，但是text又没有header字段容易爆红)
-     * 故这里只能粗暴处理，导致每次切换后台回来都会重新刷新一遍
-     * 二则：解决了不是差分刷新的问题，是flow的问题，详细见viewmodel
-     */
-    override fun areContentsTheSame(oldItem: Daily, newItem: Daily): Boolean {
-        return newItem == oldItem
-    }
+class DailyAdapter(val itemClickListener: OnItemClickListener) :
+    PagingDataAdapter<Daily, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<Daily>() {
 
-    override fun areItemsTheSame(oldItem: Daily, newItem: Daily): Boolean {
-//        var newId = 0
-//        if(newItem.data.type == "textCard") {
-//            newId = oldItem.data.id
-//        } else {
-//            if(newItem.data.type == "followCard") {
-//                newId = newItem.data.content.data.id
-//            }
-//        }
-//
-//        var oldId = 0
-//        if(oldItem.data.type == "textCard") {
-//            oldId = oldItem.data.id
-//        } else {
-//            if(oldItem.data.type == "followCard") {
-//                oldId = oldItem.data.content.data.id
-//            }
-//        }
-        return newItem == oldItem // 粗暴解决
-    }
+        override fun areContentsTheSame(oldItem: Daily, newItem: Daily): Boolean {
+            return newItem == oldItem
+        }
 
-} ) {
+        override fun areItemsTheSame(oldItem: Daily, newItem: Daily): Boolean {
+            return newItem == oldItem // 粗暴解决
+        }
+
+    }) {
 
     companion object {
         private val TYPE_TITLE = 0
@@ -85,13 +65,15 @@ class DailyAdapter(val itemClickListener: OnItemClickListener) : PagingDataAdapt
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val daily = getItem(position)
         daily?.let {
-            when(holder) {
+            when (holder) {
                 is TitleViewHolder -> {
                     holder.mTvTitle.text = daily.data.text
                 }
+
                 is VideoViewHolder -> {
                     holder.mTvVideoTitle.text = daily.data.content.data.title
-                    holder.mTvDesc.text = daily.data.content.data.author.name + " / #" + daily.data.content.data.category
+                    holder.mTvDesc.text =
+                        daily.data.content.data.author.name + " / #" + daily.data.content.data.category
                     Glide.with(holder.mIvAvatar.context)
                         .load(daily.data.content.data.author.icon)
                         .error(R.drawable.ic_avatar)
@@ -108,21 +90,23 @@ class DailyAdapter(val itemClickListener: OnItemClickListener) : PagingDataAdapt
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        if(viewType == TYPE_TITLE) {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_title,parent,false)
-            return TitleViewHolder(view)
-        } else {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_video,parent,false)
-            return VideoViewHolder(view)
+        val view = LayoutInflater.from(parent.context).inflate(
+            when (viewType) {
+                TYPE_TITLE -> R.layout.item_title
+                else -> R.layout.item_video
+            }, parent, false
+        )
+        return when (viewType) {
+            TYPE_TITLE -> TitleViewHolder(view)
+            else -> VideoViewHolder(view)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)!!
-        if(item.type == "textCard") {
-            return TYPE_TITLE
-        } else {
-            return TYPE_VIDEO
+        return when (item.type) {
+            "textCard" -> TYPE_TITLE
+            else -> TYPE_VIDEO
         }
     }
 

@@ -18,12 +18,14 @@ import com.generals.module.video.R
  * @Date : 2025/7/16 17:22
  */
 
-class FooterLoadingAdapter(val retry: () -> Unit) : LoadStateAdapter<FooterLoadingAdapter.ViewHolder>() {
+class FooterLoadingAdapter(val retry: () -> Unit) :
+    LoadStateAdapter<FooterLoadingAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val progressBar: ProgressBar = view.findViewById(R.id.progress_load)
         val mTvLoad: TextView = view.findViewById(R.id.tv_load)
         val mBtnRetry: Button = view.findViewById(R.id.btn_retry)
+
         init {
             mBtnRetry.setOnClickListener {
                 retry()
@@ -38,7 +40,8 @@ class FooterLoadingAdapter(val retry: () -> Unit) : LoadStateAdapter<FooterLoadi
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, loadState: LoadState): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_loading, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.layout_loading, parent, false)
         return ViewHolder(view)
     }
 

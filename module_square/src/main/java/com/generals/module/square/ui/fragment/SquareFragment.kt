@@ -5,12 +5,10 @@ import android.animation.Animator.AnimatorListener
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,12 +17,8 @@ import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ConcatAdapter
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.generals.lib.base.BaseActivity
@@ -33,7 +27,6 @@ import com.generals.module.square.model.bean.ItemDetail
 import com.generals.module.square.model.bean.Photo
 import com.generals.module.square.model.bean.Square
 import com.generals.module.square.ui.activity.SquareDetailActivity
-import com.generals.module.square.ui.adapter.BannerContentAdapter
 import com.generals.module.square.ui.adapter.BannerItemAdapter
 import com.generals.module.square.ui.adapter.SquareAdapter
 import com.generals.module.square.viewmodel.SquareViewModel
@@ -41,7 +34,7 @@ import kotlin.collections.ArrayList
 
 class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
 
-    private val squareViewModel : SquareViewModel by viewModels()
+    private val squareViewModel: SquareViewModel by viewModels()
 
     private lateinit var baseActivity: BaseActivity
     private lateinit var recyclerview: RecyclerView
@@ -54,7 +47,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
     private var startScore = "0"
     private val squareList: MutableList<Square> = mutableListOf()
     private var isLoading = false
-    private var isLoad = false
+    private var isLoad = false // 表示是否加载过了
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,7 +76,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 // 如果不能继续向下滑（已经滑倒底部）
-                if(!isLoading && !recyclerView.canScrollVertically(1) && isLoad) {
+                if (!isLoading && !recyclerView.canScrollVertically(1) && isLoad) {
                     loadMoreData()
                 }
             }
@@ -99,7 +92,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
     }
 
     private fun checkNetWork() {
-        if(baseActivity.isNetworkAvailable()) {
+        if (baseActivity.isNetworkAvailable()) {
             loadData()
         } else {
             showToast("网络链接失败，请重试!")
@@ -125,9 +118,11 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
     private fun listenLiveData() {
         squareViewModel.bannerLiveData.observe(viewLifecycleOwner) {
             val bannerList: MutableList<ItemDetail> = mutableListOf()
-            bannerList.add(it[it.size - 1])
-            bannerList.addAll(it)
-            bannerList.add(it[0])
+            bannerList.apply {
+                add(it[it.size - 1])
+                addAll(it)
+                add(it[0])
+            }
             bannerAdapter = BannerItemAdapter(bannerList)
             bannerAdapter.notifyDataSetChanged()
             recyclerview.adapter = ConcatAdapter(bannerAdapter, squareAdapter)
@@ -137,15 +132,9 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
             stopAnimate()
             startScore = Uri.parse(response.nextPageUrl).getQueryParameter("startScore") ?: "0"
             // 提取出只含"ugcPicture"的数据
-            for(item in response.itemList) {
-                if(item.data.dataType == "FollowCard") {
-                    if(item.data.content != null) {
-                        if(item.data.content.type != null) {
-                            if(item.data.content.type == "ugcPicture") {
-                                squareList.add(item)
-                            }
-                        }
-                    }
+            for (item in response.itemList) {
+                if (item.data.dataType == "FollowCard" && item.data.content != null && item.data.content.type != null && item.data.content.type == "ugcPicture") {
+                    squareList.add(item)
                 }
             }
             squareAdapter.submitList(squareList.toList())
@@ -170,7 +159,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
         )
         // 开始刷新
         loading.isClickable = false
-        if(baseActivity.isNetworkAvailable()) {
+        if (baseActivity.isNetworkAvailable()) {
             squareViewModel.getSquareInfo(startScore, 2)
         } else {
             showToast("网络链接失败，请重试!")
@@ -215,8 +204,17 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
         val option = ActivityOptions.makeSceneTransitionAnimation(baseActivity)
         val intent = Intent(baseActivity, SquareDetailActivity::class.java)
         val photoList: ArrayList<Photo> = ArrayList()
-        for(square in squareList) {
-            val photo = Photo(square.data.content.data.id, square.data.content.data.description,square.data.content.data.consumption.collectionCount, square.data.content.data.owner.nickname,square.data.content.data.owner.avatar, square.data.content.data.createTime, square.data.content.data.updateTime, square.data.content.data.urls)
+        for (square in squareList) {
+            val photo = Photo(
+                square.data.content.data.id,
+                square.data.content.data.description,
+                square.data.content.data.consumption.collectionCount,
+                square.data.content.data.owner.nickname,
+                square.data.content.data.owner.avatar,
+                square.data.content.data.createTime,
+                square.data.content.data.updateTime,
+                square.data.content.data.urls
+            )
             photoList.add(photo)
         }
         intent.putExtra("position", position)

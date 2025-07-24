@@ -46,21 +46,24 @@ class HomeActivity : BaseActivity() {
         viewPager2.adapter = ActivityVP2Adapter(this, fragmentList)
 //        viewPager2.isUserInputEnabled = false
         bottomNavigation.setOnItemSelectedListener {
-            when(it.itemId) {
+            when (it.itemId) {
                 R.id.bottom_home -> {
                     viewPager2.setCurrentItem(0, false)
                     return@setOnItemSelectedListener true
                 }
+
                 R.id.bottom_square -> {
                     viewPager2.setCurrentItem(1, false)
                     return@setOnItemSelectedListener true
                 }
+
                 R.id.bottom_found -> {
                     viewPager2.setCurrentItem(2, false)
                     return@setOnItemSelectedListener true
                 }
+
                 R.id.bottom_hot -> {
-                    viewPager2.setCurrentItem(3,false)
+                    viewPager2.setCurrentItem(3, false)
                     return@setOnItemSelectedListener true
                 }
             }

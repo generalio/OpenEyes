@@ -4,8 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -19,7 +17,8 @@ import com.generals.module.square.model.bean.ItemDetail
  * @Date : 2025/7/18 14:25
  */
 
-class BannerContentAdapter(private val bannerList: List<ItemDetail>) : RecyclerView.Adapter<BannerContentAdapter.ViewHolder>() {
+class BannerContentAdapter(private val bannerList: List<ItemDetail>) :
+    RecyclerView.Adapter<BannerContentAdapter.ViewHolder>() {
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mIvContent: ImageView = view.findViewById(R.id.iv_banner_content)
@@ -35,7 +34,8 @@ class BannerContentAdapter(private val bannerList: List<ItemDetail>) : RecyclerV
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_banner_content, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.item_banner_content, parent, false)
         return ViewHolder(view)
     }
 

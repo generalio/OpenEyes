@@ -63,17 +63,18 @@ class VideoCommentFragment : Fragment() {
     private fun initEvent() {
         checkNetWork()
         mTvSort.setOnClickListener {
-            if(mTvSort.text == "按热度") {
-                mTvSort.text = "按时间"
-                mTvTitle.text = "最新评论"
-                loadingLayout.startAnimate()
-            } else {
-                if(mTvSort.text == "按时间") {
+            when (mTvSort.text) {
+                "按热度" -> {
+                    mTvSort.text = "按时间"
+                    mTvTitle.text = "最新评论"
+                }
+
+                else -> {
                     mTvSort.text = "按热度"
                     mTvTitle.text = "最热评论"
-                    loadingLayout.startAnimate()
                 }
             }
+            loadingLayout.startAnimate()
         }
         loadingLayout.onRotateStart = {
             mTvSort.isClickable = false
@@ -86,18 +87,15 @@ class VideoCommentFragment : Fragment() {
     }
 
     private fun checkNetWork() {
-        if(videoActivity.isNetworkAvailable()) {
-            if(mTvSort.text == "按热度") {
-                loadHotData()
-            } else {
-                if(mTvSort.text == "按时间") {
-                    loadNewData()
-                }
+        if (videoActivity.isNetworkAvailable()) {
+            when (mTvSort.text) {
+                "按热度" -> loadHotData()
+                else -> loadNewData()
             }
         } else {
             videoActivity.showToast("网络链接失败，请重试!")
-            mTvSort.text = if(mTvSort.text == "按时间") "按热度" else "按时间"
-            mTvTitle.text = if(mTvTitle.text == "最热评论") "最新评论" else "最热评论"
+            mTvSort.text = if (mTvSort.text == "按时间") "按热度" else "按时间"
+            mTvTitle.text = if (mTvTitle.text == "最热评论") "最新评论" else "最热评论"
         }
     }
 
@@ -111,15 +109,18 @@ class VideoCommentFragment : Fragment() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getNewComment(videoActivity.videoInfo.id).collectLatest {
-                    rvComment.adapter = ConcatAdapter(adapter.withLoadStateFooter(FooterLoadingAdapter { adapter.retry() }), FooterAdapter())
+                    rvComment.adapter = ConcatAdapter(
+                        adapter.withLoadStateFooter(FooterLoadingAdapter { adapter.retry() }),
+                        FooterAdapter()
+                    )
                     adapter.submitData(it)
                 }
             }
         }
         // 监听paging3的加载状态
         adapter.addLoadStateListener { loadState ->
-            if(loadState.refresh is LoadState.NotLoading && adapter.itemCount > 0) {
-                if(!isFirst) {
+            if (loadState.refresh is LoadState.NotLoading && adapter.itemCount > 0) {
+                if (!isFirst) {
                     rvComment.scrollToPosition(0)
                     isFirst = true
                 }
@@ -129,27 +130,9 @@ class VideoCommentFragment : Fragment() {
 
     private fun listenViewModel() {
         viewModel.hotCommentLiveData.observe(viewLifecycleOwner) {
-            val itemList = it.itemList
-            val hotList: MutableList<Comment> = mutableListOf()
-            for(item in itemList) {
-                if(item.type == "reply") {
-                    hotList.add(item)
-                }
-                if(item.type == "leftAlignTextHeader" && item.data.text == "最新评论") {
-                    break
-                }
-            }
-            // 特殊处理，有的视频接口无最热评论故用最新评论的第一页代替
-            if(itemList.isNotEmpty() && itemList[0].data.text == "最新评论") {
-                for(item in itemList) {
-                    if(item.type == "reply") {
-                        hotList.add(item)
-                    }
-                }
-            }
             val adapter = HotCommentAdapter()
             rvComment.adapter = ConcatAdapter(adapter, FooterAdapter())
-            adapter.submitList(hotList.toList())
+            adapter.submitList(it.toList())
         }
     }
 }

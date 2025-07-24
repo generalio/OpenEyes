@@ -23,16 +23,18 @@ import java.util.Locale
  * @Date : 2025/7/16 17:17
  */
 
-class NewCommentAdapter : PagingDataAdapter<Comment, NewCommentAdapter.NewCommentViewHolder>(object : DiffUtil.ItemCallback<Comment>() {
-    override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-        return newItem == oldItem
-    }
+class NewCommentAdapter :
+    PagingDataAdapter<Comment, NewCommentAdapter.NewCommentViewHolder>(object :
+        DiffUtil.ItemCallback<Comment>() {
+        override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+            return newItem == oldItem
+        }
 
-    override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-        return oldItem.data.id == newItem.data.id
-    }
+        override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+            return oldItem.data.id == newItem.data.id
+        }
 
-}) {
+    }) {
 
     inner class NewCommentViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val mIvAvatar: ImageView = view.findViewById(R.id.iv_comment_avatar)

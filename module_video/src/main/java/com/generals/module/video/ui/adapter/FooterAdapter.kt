@@ -18,7 +18,8 @@ class FooterAdapter : RecyclerView.Adapter<FooterAdapter.FooterViewHolder>() {
     inner class FooterViewHolder(view: View) : ViewHolder(view)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FooterViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_footer, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.layout_footer, parent, false)
         return FooterViewHolder(view)
     }
 
