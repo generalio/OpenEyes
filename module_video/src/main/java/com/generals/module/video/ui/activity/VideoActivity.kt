@@ -95,6 +95,7 @@ class VideoActivity : BaseActivity() {
     lateinit var videoInfo: VideoInfo
     lateinit var orientationUtils: OrientationUtils
     private lateinit var videoPlayer: StandardGSYVideoPlayer
+    private lateinit var tabLayoutMediator: TabLayoutMediator
 
     private lateinit var videoLayout: View
     private lateinit var tabLayout: TabLayout
@@ -142,9 +143,10 @@ class VideoActivity : BaseActivity() {
             { VideoCommentFragment() }
         )
         viewPager2.adapter = VP2Adapter(this, fragmentList)
-        TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+        tabLayoutMediator = TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
             tab.text = if (position == 0) "简介" else "评论"
-        }.attach()
+        }
+        tabLayoutMediator.attach()
         tabLayout.addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 when (tab.position) {
@@ -252,6 +254,7 @@ class VideoActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        tabLayoutMediator.detach()
         if (isPlay) {
             videoPlayer.currentPlayer.release()
         }
