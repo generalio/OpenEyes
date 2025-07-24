@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
         //applicationId = "com.example.module_discover"
-        minSdk = 30
+        minSdk = 26
         targetSdk = 34
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

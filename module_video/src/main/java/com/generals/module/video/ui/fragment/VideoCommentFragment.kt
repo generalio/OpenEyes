@@ -37,6 +37,8 @@ class VideoCommentFragment : Fragment() {
     private lateinit var mTvSort: TextView
     private lateinit var rvComment: RecyclerView
     private lateinit var loadingLayout: LoadingLayout
+    private lateinit var newCommentAdapter: NewCommentAdapter
+    private lateinit var hotCommentAdapter: HotCommentAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +57,8 @@ class VideoCommentFragment : Fragment() {
         rvComment = view.findViewById(R.id.rv_comment)
         rvComment.layoutManager = LinearLayoutManager(videoActivity)
         loadingLayout = view.findViewById(R.id.layout_loading)
+        newCommentAdapter = NewCommentAdapter()
+        hotCommentAdapter = HotCommentAdapter()
 
         initEvent()
         listenViewModel()
@@ -104,22 +108,21 @@ class VideoCommentFragment : Fragment() {
     }
 
     private fun loadNewData() {
-        val adapter = NewCommentAdapter()
         var isFirst = false
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getNewComment(videoActivity.videoInfo.id).collectLatest {
                     rvComment.adapter = ConcatAdapter(
-                        adapter.withLoadStateFooter(FooterLoadingAdapter { adapter.retry() }),
+                        newCommentAdapter.withLoadStateFooter(FooterLoadingAdapter { newCommentAdapter.retry() }),
                         FooterAdapter()
                     )
-                    adapter.submitData(it)
+                    newCommentAdapter.submitData(it)
                 }
             }
         }
         // 监听paging3的加载状态
-        adapter.addLoadStateListener { loadState ->
-            if (loadState.refresh is LoadState.NotLoading && adapter.itemCount > 0) {
+        newCommentAdapter.addLoadStateListener { loadState ->
+            if (loadState.refresh is LoadState.NotLoading && newCommentAdapter.itemCount > 0) {
                 if (!isFirst) {
                     rvComment.scrollToPosition(0)
                     isFirst = true
@@ -130,9 +133,8 @@ class VideoCommentFragment : Fragment() {
 
     private fun listenViewModel() {
         viewModel.hotCommentLiveData.observe(viewLifecycleOwner) {
-            val adapter = HotCommentAdapter()
-            rvComment.adapter = ConcatAdapter(adapter, FooterAdapter())
-            adapter.submitList(it.toList())
+            rvComment.adapter = ConcatAdapter(hotCommentAdapter, FooterAdapter())
+            hotCommentAdapter.submitList(it.toList())
         }
     }
 }

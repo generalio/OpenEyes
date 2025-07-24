@@ -1,6 +1,7 @@
 package com.generals.lib.base
 
 import android.app.Application
+import com.alibaba.android.arouter.BuildConfig
 import com.alibaba.android.arouter.launcher.ARouter
 /**
  * @Desc : BaseApp
@@ -10,12 +11,10 @@ import com.alibaba.android.arouter.launcher.ARouter
 
 class BaseApp : Application() {
 
-    private val isDebug = true
-
     override fun onCreate() {
         super.onCreate()
 
-        if(isDebug) {
+        if(BuildConfig.DEBUG) {
             ARouter.openLog()
             ARouter.openDebug()
         }

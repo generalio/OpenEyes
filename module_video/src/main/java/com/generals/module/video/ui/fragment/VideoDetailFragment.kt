@@ -28,6 +28,7 @@ class VideoDetailFragment : Fragment(), DetailInfoAdapter.OnItemClickListener, D
 
     private lateinit var loadingLayout: LoadingLayout
     private lateinit var recyclerView: RecyclerView
+    private lateinit var relatedAdapter: DetailRelatedAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,6 +45,7 @@ class VideoDetailFragment : Fragment(), DetailInfoAdapter.OnItemClickListener, D
         loadingLayout = view.findViewById(R.id.layout_detail_loading)
         recyclerView = view.findViewById(R.id.rv_video_detail)
         recyclerView.layoutManager = LinearLayoutManager(videoActivity)
+        relatedAdapter = DetailRelatedAdapter(this)
 
         initEvent()
         listenLiveData()
@@ -67,10 +69,8 @@ class VideoDetailFragment : Fragment(), DetailInfoAdapter.OnItemClickListener, D
 
     private fun listenLiveData() {
         viewModel.videoRelatedLiveData.observe(viewLifecycleOwner) {
-            val relatedAdapter = DetailRelatedAdapter(this)
             relatedAdapter.submitList(it.toList())
-            val adapter = ConcatAdapter(DetailInfoAdapter(videoActivity.videoInfo, this), relatedAdapter ,FooterAdapter())
-            recyclerView.adapter = adapter
+            recyclerView.adapter = ConcatAdapter(DetailInfoAdapter(videoActivity.videoInfo, this), relatedAdapter ,FooterAdapter())
         }
     }
 

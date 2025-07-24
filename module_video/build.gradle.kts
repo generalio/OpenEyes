@@ -17,7 +17,7 @@ android {
 
     defaultConfig {
 //        applicationId = "com.generals.module.video"
-        minSdk = 30
+        minSdk = 26
 //        versionCode = 1
 //        versionName = "1.0"
 
