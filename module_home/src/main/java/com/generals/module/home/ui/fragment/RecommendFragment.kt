@@ -91,7 +91,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
     }
 
     private fun loadData() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getRecommend().collectLatest {
                     recyclerView.visibility = View.VISIBLE

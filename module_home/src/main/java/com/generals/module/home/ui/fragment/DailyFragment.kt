@@ -91,7 +91,7 @@ class DailyFragment : Fragment(), DailyAdapter.OnItemClickListener {
 
     // 加载数据
     private fun loadData() {
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getDaily().collectLatest {
                     recyclerView.visibility = View.VISIBLE

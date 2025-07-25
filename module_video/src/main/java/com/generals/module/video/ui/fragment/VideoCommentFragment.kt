@@ -109,7 +109,7 @@ class VideoCommentFragment : Fragment() {
 
     private fun loadNewData() {
         var isFirst = false
-        lifecycleScope.launch {
+            viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getNewComment(videoActivity.videoInfo.id).collectLatest {
                     rvComment.adapter = ConcatAdapter(
