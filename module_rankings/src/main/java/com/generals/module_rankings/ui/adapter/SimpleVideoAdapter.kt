@@ -15,9 +15,15 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.module_rankings.R
 import com.generals.module_rankings.model.bean.Item
 import com.generals.module_rankings.model.bean.VideoType
+
+// 定义点击监听器接口，提高可读性
+interface OnItemClickListener {
+    fun onItemClick(item: Any)
+}
+
 class SimpleVideoAdapter(
     private val exoPlayer: ExoPlayer,
-    private val onItemClick: (Any) -> Unit
+    private val itemClickListener: OnItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<Any> = emptyList()
@@ -51,14 +57,16 @@ class SimpleVideoAdapter(
             else -> TYPE_CONTENT
         }
     }
+
     @UnstableApi
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_VIDEO -> VideoViewHolder.create(parent, exoPlayer)
-            TYPE_CONTENT -> ContentViewHolder.create(parent, onItemClick)
+            TYPE_CONTENT -> ContentViewHolder.create(parent, itemClickListener)
             else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
     }
+
     @UnstableApi
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
@@ -69,6 +77,7 @@ class SimpleVideoAdapter(
 
     override fun getItemCount() = items.size
 }
+
 @UnstableApi
 // ViewHolder实现 (去掉HeaderViewHolder)
 class VideoViewHolder(
@@ -82,6 +91,7 @@ class VideoViewHolder(
         setupPlayerView()
         setDefaultHeight()
     }
+
     @UnstableApi
     private fun setupPlayerView() {
         playerView.apply {
@@ -113,7 +123,7 @@ class VideoViewHolder(
 
 class ContentViewHolder(
     itemView: View,
-    private val onItemClick: (Any) -> Unit
+    private val itemClickListener: OnItemClickListener
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val feed: ImageView = itemView.findViewById(R.id.item_video_iv)
@@ -139,15 +149,15 @@ class ContentViewHolder(
             .into(feed)
 
         itemView.setOnClickListener {
-            onItemClick(item)
+            itemClickListener.onItemClick(item)
         }
     }
 
     companion object {
-        fun create(parent: ViewGroup, onItemClick: (Any) -> Unit): ContentViewHolder {
+        fun create(parent: ViewGroup, itemClickListener: OnItemClickListener): ContentViewHolder {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_video2, parent, false)
-            return ContentViewHolder(view, onItemClick)
+            return ContentViewHolder(view, itemClickListener)
         }
     }
 }

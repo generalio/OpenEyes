@@ -24,47 +24,13 @@ class RankingAdapter(
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     class RankingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val feed: ImageView
-        val icon: ImageView
-        val name: TextView
-        val title: TextView
-        val category: TextView
-
-
-        init {
-            // 打印 itemView 的信息
-            Log.d("ViewHolder", "itemView class: ${itemView.javaClass.simpleName}")
-            Log.d("ViewHolder", "itemView id: ${itemView.id}")
-
-            // 尝试查找所有子 View
-            fun findAllViews(view: View) {
-                if (view is ViewGroup) {
-                    for (i in 0 until view.childCount) {
-                        findAllViews(view.getChildAt(i))
-                    }
-                } else {
-                    val idName = try {
-                        view.resources.getResourceEntryName(view.id)
-                    } catch (e: Exception) {
-                        "unknown"
-                    }
-                    Log.d("ViewHolder", "Found view: ${view.javaClass.simpleName} with id: $idName")
-                }
-            }
-
-            findAllViews(itemView)
-
-            // 然后正常查找
-            feed = itemView.findViewById(R.id.item_video_iv)
-            icon = itemView.findViewById(R.id.imageView3)
-            name = itemView.findViewById(R.id.textView2)
-            title = itemView.findViewById(R.id.textView)
-            category = itemView.findViewById(R.id.textView3)
-
-
-            Log.d("ViewHolder", "All views found successfully")
-        }
+        val feed: ImageView = itemView.findViewById(R.id.item_video_iv)
+        val icon: ImageView = itemView.findViewById(R.id.imageView3)
+        val name: TextView = itemView.findViewById(R.id.textView2)
+        val title: TextView = itemView.findViewById(R.id.textView)
+        val category: TextView = itemView.findViewById(R.id.textView3)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
