@@ -22,12 +22,6 @@ class MonthRankingFragment : Fragment() {
     private lateinit var viewModel: RankingViewModel
     private lateinit var adapter: RankingAdapter
 
-    companion object {
-        fun newInstance(): MonthRankingFragment {
-            return MonthRankingFragment()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 在 onCreate 中初始化 ViewModel
