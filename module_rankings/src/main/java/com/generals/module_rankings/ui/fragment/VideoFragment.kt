@@ -22,6 +22,7 @@ import com.generals.module_rankings.ui.adapter.SimpleVideoAdapter
 import kotlinx.coroutines.launch
 import com.alibaba.android.arouter.launcher.ARouter
 import com.generals.module_rankings.model.bean.VideoType
+import com.generals.module_rankings.ui.adapter.OnItemClickListener
 
 class VideoFragment : Fragment() {
 
@@ -65,9 +66,11 @@ class VideoFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = SimpleVideoAdapter(exoPlayer) { item ->
-            viewModel.onItemClick(item)
-        }
+        adapter = SimpleVideoAdapter(exoPlayer, object : OnItemClickListener {
+            override fun onItemClick(item: Any) {
+                viewModel.onItemClick(item)
+            }
+        })
 
         recyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -82,6 +85,7 @@ class VideoFragment : Fragment() {
             })
         }
     }
+
     private fun checkIfVideoIsGoneAndRemove() {
         if (isFeaturedVideoRemoved) return
 
