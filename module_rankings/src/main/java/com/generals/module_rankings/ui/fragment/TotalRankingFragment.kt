@@ -22,12 +22,6 @@ class TotalRankingFragment : Fragment() {
     private lateinit var viewModel: RankingViewModel
     private lateinit var adapter: RankingAdapter
 
-    companion object {
-        fun newInstance(): TotalRankingFragment {
-            return TotalRankingFragment()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // 获取父 Fragment 的 ViewModel

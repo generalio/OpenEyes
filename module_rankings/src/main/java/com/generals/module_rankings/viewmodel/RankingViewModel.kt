@@ -173,7 +173,7 @@ class RankingViewModel : ViewModel() {
         }
 
         featuredVideoItem = null
-        hasDemotedFeatured = true //
+        hasDemotedFeatured = true
         updateVideoUiList()
     }
     data class RankingUiState(
