@@ -44,7 +44,7 @@ class HomeActivity : BaseActivity() {
             { HotFragment() }
         )
         viewPager2.adapter = ActivityVP2Adapter(this, fragmentList)
-//        viewPager2.isUserInputEnabled = false
+        viewPager2.isUserInputEnabled = false // 关闭了主页四个fragment的滑动
         bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.bottom_home -> {
