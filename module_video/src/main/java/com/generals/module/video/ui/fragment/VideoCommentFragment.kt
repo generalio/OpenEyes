@@ -54,8 +54,9 @@ class VideoCommentFragment : Fragment() {
         videoActivity = activity as VideoActivity
         mTvTitle = view.findViewById(R.id.tv_comment_title)
         mTvSort = view.findViewById(R.id.tv_comment_sort)
-        rvComment = view.findViewById(R.id.rv_comment)
-        rvComment.layoutManager = LinearLayoutManager(videoActivity)
+        rvComment = view.findViewById<RecyclerView?>(R.id.rv_comment).apply {
+            layoutManager = LinearLayoutManager(videoActivity)
+        }
         loadingLayout = view.findViewById(R.id.layout_loading)
         newCommentAdapter = NewCommentAdapter()
         hotCommentAdapter = HotCommentAdapter()
@@ -109,7 +110,8 @@ class VideoCommentFragment : Fragment() {
 
     private fun loadNewData() {
         var isFirst = false
-            viewLifecycleOwner.lifecycleScope.launch {
+        // 这里需使用viewLifecycleOwner是因为lifecycleScope的生命周期与fragment绑定，而fragment与view的生命周期不同
+        viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getNewComment(videoActivity.videoInfo.id).collectLatest {
                     rvComment.adapter = ConcatAdapter(

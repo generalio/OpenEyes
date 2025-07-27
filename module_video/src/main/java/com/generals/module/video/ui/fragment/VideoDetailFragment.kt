@@ -43,8 +43,9 @@ class VideoDetailFragment : Fragment(), DetailInfoAdapter.OnItemClickListener, D
 
         videoActivity = activity as VideoActivity
         loadingLayout = view.findViewById(R.id.layout_detail_loading)
-        recyclerView = view.findViewById(R.id.rv_video_detail)
-        recyclerView.layoutManager = LinearLayoutManager(videoActivity)
+        recyclerView = view.findViewById<RecyclerView?>(R.id.rv_video_detail).apply {
+            layoutManager = LinearLayoutManager(videoActivity)
+        }
         relatedAdapter = DetailRelatedAdapter(this)
 
         initEvent()

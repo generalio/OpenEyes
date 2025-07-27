@@ -26,10 +26,12 @@ class BannerTransformer : ViewPager2.PageTransformer {
         // 中间大，两边小
         val transition = MIN_VALUE + (1 - abs(position)) * (MAX_VALUE - MIN_VALUE)
         val transitionAlpha = MIN_ALPHA + (1 - abs(position)) * (MAX_ALPHA - MIN_ALPHA)
-        page.scaleX = transition
-        page.scaleY = transition // 缩放
-        page.alpha = transitionAlpha // 改变透明度
-        page.translationX = -position * Translation // 中间与左右重叠
-        page.z = abs(position) // 更改z轴
+        page.apply {
+            scaleX = transition
+            scaleY = transition // 缩放
+            alpha = transitionAlpha // 改变透明度
+            translationX = -position * Translation // 中间与左右重叠
+            z = abs(position) // 更改z轴
+        }
     }
 }

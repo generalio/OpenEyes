@@ -37,7 +37,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
     private lateinit var mBtnRetry: Button
     private lateinit var mTvLoading: TextView
 
-    private lateinit var adapter: RecommendAdapter
+    private lateinit var recommendAdapter: RecommendAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +50,7 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = RecommendAdapter(this)
+        recommendAdapter = RecommendAdapter(this)
         homeActivity = activity as HomeActivity
 
         loadingLayout = view.findViewById(R.id.recommend_layout_load)
@@ -58,10 +58,11 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
         mBtnRetry = loadingLayout.findViewById(R.id.btn_retry)
         mTvLoading = loadingLayout.findViewById(R.id.tv_load)
 
-        recyclerView = view.findViewById(R.id.rv_recommend)
-        recyclerView.layoutManager = LinearLayoutManager(homeActivity)
-        recyclerView.adapter = adapter.withLoadStateFooter(FooterAdapter { adapter.retry() })
-        recyclerView.visibility = View.GONE
+        recyclerView = view.findViewById<RecyclerView?>(R.id.rv_recommend).apply {
+            layoutManager = LinearLayoutManager(homeActivity)
+            adapter = recommendAdapter.withLoadStateFooter(FooterAdapter { recommendAdapter.retry() })
+            visibility = View.GONE
+        }
         mTvLoading.text = "正在加载中..."
 
         showLoading()
@@ -95,11 +96,11 @@ class RecommendFragment : Fragment(), RecommendAdapter.OnItemClickListener {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getRecommend().collectLatest {
                     recyclerView.visibility = View.VISIBLE
-                    adapter.submitData(it)
+                    recommendAdapter.submitData(it)
                 }
             }
         }
-        adapter.addLoadStateListener { loadState ->
+        recommendAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.NotLoading) {
                 hideLoading()
             }

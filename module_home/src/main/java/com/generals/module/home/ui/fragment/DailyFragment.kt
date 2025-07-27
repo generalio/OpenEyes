@@ -37,7 +37,7 @@ class DailyFragment : Fragment(), DailyAdapter.OnItemClickListener {
     private lateinit var mBtnRetry: Button
     private lateinit var mTvLoading: TextView
 
-    private lateinit var adapter: DailyAdapter
+    private lateinit var dailyAdapter: DailyAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +50,7 @@ class DailyFragment : Fragment(), DailyAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = DailyAdapter(this)
+        dailyAdapter = DailyAdapter(this)
         homeActivity = activity as HomeActivity
 
         loadingLayout = view.findViewById(R.id.daily_layout_load)
@@ -58,11 +58,11 @@ class DailyFragment : Fragment(), DailyAdapter.OnItemClickListener {
         mBtnRetry = loadingLayout.findViewById(R.id.btn_retry)
         mTvLoading = loadingLayout.findViewById(R.id.tv_load)
 
-        recyclerView = view.findViewById(R.id.rv_daily)
-        recyclerView.layoutManager = LinearLayoutManager(homeActivity)
-        recyclerView.adapter =
-            adapter.withLoadStateFooter(FooterAdapter { adapter.retry() }) // 设置adapter以及断网的adapter
-        recyclerView.visibility = View.GONE
+        recyclerView = view.findViewById<RecyclerView?>(R.id.rv_daily).apply {
+            layoutManager = LinearLayoutManager(homeActivity)
+            adapter = dailyAdapter.withLoadStateFooter(FooterAdapter { dailyAdapter.retry() }) // 设置adapter以及断网的adapter
+            visibility = View.GONE
+        }
         mTvLoading.text = "正在加载中..."
         showLoading()
         initEvent()
@@ -95,11 +95,11 @@ class DailyFragment : Fragment(), DailyAdapter.OnItemClickListener {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.getDaily().collectLatest {
                     recyclerView.visibility = View.VISIBLE
-                    adapter.submitData(it)
+                    dailyAdapter.submitData(it)
                 }
             }
         }
-        adapter.addLoadStateListener { loadState ->
+        dailyAdapter.addLoadStateListener { loadState ->
             if (loadState.refresh is LoadState.NotLoading) {
                 hideLoading()
             }

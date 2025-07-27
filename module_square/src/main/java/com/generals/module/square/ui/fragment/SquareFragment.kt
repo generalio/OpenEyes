@@ -62,25 +62,24 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
 
         baseActivity = activity as BaseActivity
 
-        recyclerview = view.findViewById(R.id.rv_square)
-        loading = view.findViewById(R.id.iv_loading)
-        val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        recyclerview.layoutManager = layoutManager
-
         bannerAdapter = BannerItemAdapter(listOf())
         squareAdapter = SquareAdapter(this)
-        recyclerview.adapter = ConcatAdapter(bannerAdapter, squareAdapter)
+        loading = view.findViewById(R.id.iv_loading)
+        recyclerview = view.findViewById<RecyclerView?>(R.id.rv_square).apply {
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            adapter = ConcatAdapter(bannerAdapter, squareAdapter)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    // 如果不能继续向下滑（已经滑倒底部）
+                    if (!isLoading && !recyclerView.canScrollVertically(1) && isLoad) {
+                        loadMoreData()
+                    }
+                }
+            })
+        }
         checkNetWork()
         listenLiveData()
-        recyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                // 如果不能继续向下滑（已经滑倒底部）
-                if (!isLoading && !recyclerView.canScrollVertically(1) && isLoad) {
-                    loadMoreData()
-                }
-            }
-        })
         loading.setOnClickListener {
             startAnimate()
         }
@@ -110,7 +109,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
         squareViewModel.getSquareInfo(startScore, 2)
     }
 
-    fun showToast(content: String) {
+    private fun showToast(content: String) {
         Toast.makeText(baseActivity, content, Toast.LENGTH_SHORT).show()
     }
 
@@ -150,7 +149,7 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
     }
 
     // 弹出加载动画
-    fun startAnimate() {
+    private fun startAnimate() {
         // 回弹到一定高度进行旋转
         loading.animate().translationY(-loading.height.toFloat())
             .setInterpolator(DecelerateInterpolator())
@@ -202,23 +201,25 @@ class SquareFragment : Fragment(), SquareAdapter.OnItemClickListener {
     // 点击图片进行跳转
     override fun onImageClick(position: Int, view: ImageView) {
         val option = ActivityOptions.makeSceneTransitionAnimation(baseActivity)
-        val intent = Intent(baseActivity, SquareDetailActivity::class.java)
         val photoList: ArrayList<Photo> = ArrayList()
-        for (square in squareList) {
+        squareList.forEach { square ->
+            val data = square.data.content.data
             val photo = Photo(
-                square.data.content.data.id,
-                square.data.content.data.description,
-                square.data.content.data.consumption.collectionCount,
-                square.data.content.data.owner.nickname,
-                square.data.content.data.owner.avatar,
-                square.data.content.data.createTime,
-                square.data.content.data.updateTime,
-                square.data.content.data.urls
+                data.id,
+                data.description,
+                data.consumption.collectionCount,
+                data.owner.nickname,
+                data.owner.avatar,
+                data.createTime,
+                data.updateTime,
+                data.urls
             )
             photoList.add(photo)
         }
-        intent.putExtra("position", position)
-        intent.putParcelableArrayListExtra("photoList", ArrayList(photoList))
+        val intent = Intent(baseActivity, SquareDetailActivity::class.java).apply {
+            putExtra("position", position)
+            putParcelableArrayListExtra("photoList", ArrayList(photoList))
+        }
         startActivity(intent, option.toBundle())
     }
 
